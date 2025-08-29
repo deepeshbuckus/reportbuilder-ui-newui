@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Search, 
   Plus, 
@@ -226,160 +225,109 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="px-4 pb-8">
-        <div className="max-w-4xl mx-auto">
-          <Tabs defaultValue="get-started" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
-              <TabsTrigger value="get-started" className="flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                Get Started
-              </TabsTrigger>
-              <TabsTrigger value="recent-reports" className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                Recent Reports
-              </TabsTrigger>
-            </TabsList>
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* Search */}
+          <div className="relative max-w-md mx-auto">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search reports..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
 
-            <TabsContent value="get-started" className="space-y-6">
-              {/* Feature Cards Detail */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {featureCards.map((card) => (
-                  <Card key={card.title} className="p-6 hover:shadow-lg transition-smooth">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <card.icon className="w-6 h-6 text-primary" />
+          {/* Reports Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredReports.slice(0, 6).map((report) => (
+              <Card key={report.id} className="p-6 hover:shadow-lg transition-smooth group">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                      <FileText className="w-4 h-4 text-accent-foreground" />
                     </div>
-                    <h3 className="font-semibold text-foreground mb-2">{card.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {card.description}
-                    </p>
-                    <p className="text-xs text-muted-foreground italic">
-                      Example: "{card.example}"
-                    </p>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Prompting Tips */}
-              <Card className="p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Lightbulb className="w-5 h-5 text-primary" />
-                  <h3 className="font-semibold text-foreground">Prompting Tips</h3>
-                </div>
-                <ul className="space-y-2">
-                  {promptingTips.map((tip, index) => (
-                    <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
-                      <span className="text-primary">•</span>
-                      {tip}
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="recent-reports" className="space-y-6">
-              {/* Search */}
-              <div className="relative max-w-md mx-auto">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search reports..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-
-              {/* Reports Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredReports.slice(0, 6).map((report) => (
-                  <Card key={report.id} className="p-6 hover:shadow-lg transition-smooth group">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                          <FileText className="w-4 h-4 text-accent-foreground" />
-                        </div>
-                        <Badge 
-                          variant={report.status === 'published' ? 'default' : 'secondary'}
-                          className="text-xs"
-                        >
-                          {report.status}
-                        </Badge>
-                      </div>
-                      
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-smooth">
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
-                            <Eye className="w-4 h-4 mr-2" />
-                            View Report
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Edit className="w-4 h-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Copy className="w-4 h-4 mr-2" />
-                            Duplicate
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <h3 className="font-semibold text-foreground line-clamp-2">
-                          {report.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                          {report.description}
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Calendar className="w-3 h-3" />
-                        Updated {report.updatedAt.toLocaleDateString()}
-                      </div>
-
-                      <div className="pt-2 border-t">
-                        <Badge variant="outline" className="text-xs">
-                          {report.type}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2 mt-4 pt-4 border-t">
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Eye className="w-3 h-3 mr-1" />
-                        View
-                      </Button>
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Copy className="w-3 h-3 mr-1" />
-                        Duplicate
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-
-              {filteredReports.length === 0 && (
-                <Card className="p-12 text-center">
-                  <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FileText className="w-8 h-8 text-accent-foreground" />
+                    <Badge 
+                      variant={report.status === 'published' ? 'default' : 'secondary'}
+                      className="text-xs"
+                    >
+                      {report.status}
+                    </Badge>
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">No reports found</h3>
-                  <p className="text-muted-foreground mb-4">
-                    {searchQuery ? 'Try adjusting your search criteria' : 'Create your first report to get started'}
-                  </p>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create New Report
+                  
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-smooth">
+                        <MoreVertical className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        <Eye className="w-4 h-4 mr-2" />
+                        View Report
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Copy className="w-4 h-4 mr-2" />
+                        Duplicate
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <h3 className="font-semibold text-foreground line-clamp-2">
+                      {report.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                      {report.description}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Calendar className="w-3 h-3" />
+                    Updated {report.updatedAt.toLocaleDateString()}
+                  </div>
+
+                  <div className="pt-2 border-t">
+                    <Badge variant="outline" className="text-xs">
+                      {report.type}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 mt-4 pt-4 border-t">
+                  <Button variant="outline" size="sm" className="flex-1">
+                    <Eye className="w-3 h-3 mr-1" />
+                    View
                   </Button>
-                </Card>
-              )}
-            </TabsContent>
-          </Tabs>
+                  <Button variant="outline" size="sm" className="flex-1">
+                    <Copy className="w-3 h-3 mr-1" />
+                    Duplicate
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {filteredReports.length === 0 && (
+            <Card className="p-12 text-center">
+              <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-accent-foreground" />
+              </div>
+              <h3 className="font-semibold text-foreground mb-2">No reports found</h3>
+              <p className="text-muted-foreground mb-4">
+                {searchQuery ? 'Try adjusting your search criteria' : 'Create your first report to get started'}
+              </p>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Create New Report
+              </Button>
+            </Card>
+          )}
         </div>
       </div>
     </div>
