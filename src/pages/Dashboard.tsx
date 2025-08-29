@@ -279,7 +279,7 @@ const Dashboard = () => {
                         day: '2-digit' 
                       })}
                     </div>
-                    <div className="flex gap-2 justify-end">
+                    <div className="flex gap-2 justify-center">
                       <Button variant="outline" size="sm" className="text-xs">
                         <Edit className="w-3 h-3 mr-1" />
                         Edit report
