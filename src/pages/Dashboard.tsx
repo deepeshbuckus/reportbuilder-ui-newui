@@ -198,8 +198,9 @@ const Dashboard = () => {
           {/* Feature Cards */}
           <div className="flex justify-center gap-4 mb-8">
             {featureCards.map((card) => (
-              <div key={card.title} className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center hover:bg-primary/20 transition-smooth cursor-pointer">
-                <card.icon className="w-6 h-6 text-primary" />
+              <div key={card.title} className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-smooth cursor-pointer">
+                <card.icon className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-primary">{card.title}</span>
               </div>
             ))}
           </div>
