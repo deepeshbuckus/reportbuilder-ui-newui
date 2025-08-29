@@ -258,7 +258,7 @@ const Dashboard = () => {
           </div>
 
           {/* Reports Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {filteredReports.slice(0, 6).map((report) => (
               <Card key={report.id} className="p-6 hover:shadow-lg transition-smooth hover:border-blue-500 hover:border-2 cursor-pointer">
                 <div className="space-y-4">

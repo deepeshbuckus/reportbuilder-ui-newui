@@ -56,6 +56,46 @@ const initialReports: Report[] = [
     updatedAt: new Date('2024-01-16'),
     status: 'draft',
     type: 'Benefits'
+  },
+  {
+    id: '3',
+    title: 'Monthly Attendance Report',
+    description: 'Analysis of employee attendance patterns, PTO usage, and overtime trends across departments.',
+    content: 'Sample attendance content...',
+    createdAt: new Date('2024-01-10'),
+    updatedAt: new Date('2024-01-14'),
+    status: 'published',
+    type: 'Attendance'
+  },
+  {
+    id: '4',
+    title: 'Workforce Demographics Study',
+    description: 'Comprehensive demographic analysis including diversity metrics, age distribution, and tenure statistics.',
+    content: 'Sample demographics content...',
+    createdAt: new Date('2024-01-08'),
+    updatedAt: new Date('2024-01-12'),
+    status: 'published',
+    type: 'Demographics'
+  },
+  {
+    id: '5',
+    title: 'Compensation Benchmarking Report',
+    description: 'Market comparison of salary ranges, bonus structures, and total compensation packages.',
+    content: 'Sample compensation content...',
+    createdAt: new Date('2024-01-05'),
+    updatedAt: new Date('2024-01-09'),
+    status: 'draft',
+    type: 'Payroll'
+  },
+  {
+    id: '6',
+    title: 'Performance Review Analytics',
+    description: 'Statistical analysis of performance ratings, goal completion rates, and promotion trends.',
+    content: 'Sample performance content...',
+    createdAt: new Date('2024-01-03'),
+    updatedAt: new Date('2024-01-07'),
+    status: 'published',
+    type: 'Performance'
   }
 ];
 
