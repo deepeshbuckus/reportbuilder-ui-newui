@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Search, 
   Plus, 
@@ -14,7 +14,12 @@ import {
   Copy,
   Edit,
   Trash2,
-  Eye
+  Eye,
+  DollarSign,
+  Users,
+  TrendingUp,
+  Lightbulb,
+  Send
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -140,262 +145,245 @@ const Dashboard = () => {
     report.type.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const getStatusColor = (status: Report['status']) => {
-    switch (status) {
-      case 'published':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'draft':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'archived':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+  const featureCards = [
+    {
+      icon: DollarSign,
+      title: "Payroll Insights",
+      description: "Get total costs, averages, and breakdowns by department",
+      example: "Show me total payroll costs for Q3 2024"
+    },
+    {
+      icon: Users,
+      title: "Workforce Reports", 
+      description: "Analyze individual employee data and metrics",
+      example: "List all employees with overtime hours last month"
+    },
+    {
+      icon: TrendingUp,
+      title: "Trend Analysis",
+      description: "Compare periods and identify changes over time", 
+      example: "Compare payroll costs between Q2 and Q3 2024"
     }
-  };
+  ];
+
+  const promptingTips = [
+    "Be specific with time ranges: \"Q3 2024\", \"last month\", \"year-to-date\"",
+    "Filter by departments: \"Engineering team\", \"Sales department\"", 
+    "Include pay codes: \"overtime\", \"bonuses\", \"healthcare deductions\"",
+    "Ask for comparisons: \"compare this quarter to last quarter\""
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-main">
-      {/* Hero Chat Section */}
-      <div className="pt-16 pb-8">
-        <div className="max-w-6xl mx-auto text-center px-4">
-          <div className="mb-6">
-            <h1 className="text-5xl font-bold text-primary mb-2">
-              Powperpay Reporting
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="pt-16 pb-12">
+        <div className="max-w-4xl mx-auto text-center px-4">
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-lg font-semibold text-foreground">
+              Payroll Intelligence
             </h1>
-            <p className="text-black text-xl font-medium mb-4">
-              Payroll Intelligence Platform (Custom Reporting)
-            </p>
           </div>
           
-          <h2 className="text-3xl font-bold text-black mb-4">
-            Build payroll reports with AI
+          <h2 className="text-4xl font-bold text-foreground mb-4">
+            Transform payroll data into insights with AI
           </h2>
-          <p className="text-black text-lg mb-6">
-            Generate comprehensive HR and payroll reports by chatting with AI
+          <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
+            Ask simple questions, get detailed reports. Analyze your payroll history, earnings & deductions,
+            employee profiles, and more.
           </p>
+
+          {/* Feature Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            {featureCards.map((card) => (
+              <Card key={card.title} className="p-4 text-center hover:shadow-md transition-smooth">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <card.icon className="w-5 h-5 text-primary" />
+                </div>
+                <Badge variant="secondary" className="mb-2">
+                  {card.title}
+                </Badge>
+              </Card>
+            ))}
+          </div>
           
           {/* Chat Input */}
-          <div className="max-w-3xl mx-auto">
-            <Card className="p-1 bg-white/95 backdrop-blur-sm shadow-xl">
-              <div className="flex items-center gap-3 p-4">
+          <div className="max-w-2xl mx-auto">
+            <Card className="p-1 shadow-lg">
+              <div className="flex items-center gap-3 p-3">
                 <div className="flex-1">
                   <Input
-                    placeholder="Ask AI to create a payroll summary report for Q4..."
+                    placeholder="Ask for a custom payroll report"
                     className="border-0 bg-transparent text-base placeholder:text-muted-foreground focus-visible:ring-0 px-0"
                   />
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" className="bg-primary hover:bg-primary/90">
-                    <Search className="w-4 h-4" />
-                  </Button>
-                </div>
+                <Button size="sm" className="bg-primary hover:bg-primary/90">
+                  <Send className="w-4 h-4" />
+                </Button>
               </div>
             </Card>
           </div>
         </div>
       </div>
 
-      <div className="px-4 pb-4">
-        <div className="w-full space-y-8">
-          {/* Custom Reports Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">Custom Reports</h2>
-                <p className="text-muted-foreground mt-1">
-                  Manage and edit your AI-generated payroll and HR reports
-                </p>
-              </div>
-            </div>
+      {/* Main Content */}
+      <div className="px-4 pb-8">
+        <div className="max-w-4xl mx-auto">
+          <Tabs defaultValue="get-started" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+              <TabsTrigger value="get-started" className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Get Started
+              </TabsTrigger>
+              <TabsTrigger value="recent-reports" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Recent Reports
+              </TabsTrigger>
+            </TabsList>
 
-            {/* Search and Filters */}
-            <Card className="p-4">
-              <div className="flex gap-4 items-center">
-                <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search reports..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
-                    All ({reports.length})
-                  </Badge>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-accent">
-                    Published ({reports.filter(r => r.status === 'published').length})
-                  </Badge>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-accent">
-                    Drafts ({reports.filter(r => r.status === 'draft').length})
-                  </Badge>
-                </div>
+            <TabsContent value="get-started" className="space-y-6">
+              {/* Feature Cards Detail */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {featureCards.map((card) => (
+                  <Card key={card.title} className="p-6 hover:shadow-lg transition-smooth">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                      <card.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 className="font-semibold text-foreground mb-2">{card.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {card.description}
+                    </p>
+                    <p className="text-xs text-muted-foreground italic">
+                      Example: "{card.example}"
+                    </p>
+                  </Card>
+                ))}
               </div>
-            </Card>
 
-            {/* Reports Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredReports.map((report) => (
-                <Card key={report.id} className="p-6 shadow-elegant hover:shadow-lg hover:border-primary transition-smooth group">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                        <FileText className="w-4 h-4 text-accent-foreground" />
+              {/* Prompting Tips */}
+              <Card className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Lightbulb className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold text-foreground">Prompting Tips</h3>
+                </div>
+                <ul className="space-y-2">
+                  {promptingTips.map((tip, index) => (
+                    <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="text-primary">•</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="recent-reports" className="space-y-6">
+              {/* Search */}
+              <div className="relative max-w-md mx-auto">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search reports..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+
+              {/* Reports Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredReports.slice(0, 6).map((report) => (
+                  <Card key={report.id} className="p-6 hover:shadow-lg transition-smooth group">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                          <FileText className="w-4 h-4 text-accent-foreground" />
+                        </div>
+                        <Badge 
+                          variant={report.status === 'published' ? 'default' : 'secondary'}
+                          className="text-xs"
+                        >
+                          {report.status}
+                        </Badge>
                       </div>
-                      <Badge className={getStatusColor(report.status)}>
-                        {report.status}
-                      </Badge>
-                    </div>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-smooth">
-                          <MoreVertical className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                          <Eye className="w-4 h-4 mr-2" />
-                          View Report
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Copy className="w-4 h-4 mr-2" />
-                          Remix
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div>
-                      <h3 className="font-semibold text-foreground line-clamp-2">
-                        {report.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                        {report.description}
-                      </p>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-smooth">
+                            <MoreVertical className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem>
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Report
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Edit className="w-4 h-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Copy className="w-4 h-4 mr-2" />
+                            Duplicate
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-3">
+                      <div>
+                        <h3 className="font-semibold text-foreground line-clamp-2">
+                          {report.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                          {report.description}
+                        </p>
+                      </div>
+
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Calendar className="w-3 h-3" />
-                        Created {report.createdAt.toLocaleDateString()}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Edit className="w-3 h-3" />
                         Updated {report.updatedAt.toLocaleDateString()}
                       </div>
+
+                      <div className="pt-2 border-t">
+                        <Badge variant="outline" className="text-xs">
+                          {report.type}
+                        </Badge>
+                      </div>
                     </div>
 
-                    <div className="pt-2 border-t">
-                      <Badge variant="outline" className="text-xs">
-                        {report.type}
-                      </Badge>
+                    <div className="flex gap-2 mt-4 pt-4 border-t">
+                      <Button variant="outline" size="sm" className="flex-1">
+                        <Eye className="w-3 h-3 mr-1" />
+                        View
+                      </Button>
+                      <Button variant="outline" size="sm" className="flex-1">
+                        <Copy className="w-3 h-3 mr-1" />
+                        Duplicate
+                      </Button>
                     </div>
-                  </div>
+                  </Card>
+                ))}
+              </div>
 
-                  <div className="flex gap-2 mt-4 pt-4 border-t">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Eye className="w-3 h-3 mr-1" />
-                      View
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Copy className="w-3 h-3 mr-1" />
-                      Remix
-                    </Button>
+              {filteredReports.length === 0 && (
+                <Card className="p-12 text-center">
+                  <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FileText className="w-8 h-8 text-accent-foreground" />
                   </div>
-                </Card>
-              ))}
-            </div>
-
-            {filteredReports.length === 0 && (
-              <Card className="p-12 text-center">
-                <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FileText className="w-8 h-8 text-accent-foreground" />
-                </div>
-                <h3 className="font-semibold text-foreground mb-2">No reports found</h3>
-                <p className="text-muted-foreground mb-4">
-                  {searchQuery ? 'Try adjusting your search criteria' : 'Create your first report to get started'}
-                </p>
-                <Link to="/">
+                  <h3 className="font-semibold text-foreground mb-2">No reports found</h3>
+                  <p className="text-muted-foreground mb-4">
+                    {searchQuery ? 'Try adjusting your search criteria' : 'Create your first report to get started'}
+                  </p>
                   <Button>
                     <Plus className="w-4 h-4 mr-2" />
                     Create New Report
                   </Button>
-                </Link>
-              </Card>
-            )}
-          </div>
-
-          {/* Prebuilt Reports Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">Prebuilt Report Templates</h2>
-                <p className="text-muted-foreground mt-1">
-                  Ready-to-use HR and payroll report templates to get you started quickly
-                </p>
-              </div>
-            </div>
-
-            {/* Prebuilt Reports Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {prebuiltReports.map((report) => (
-                <Card key={report.id} className="p-6 shadow-elegant hover:shadow-lg hover:border-primary transition-smooth group border-primary/20">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <FileText className="w-4 h-4 text-primary" />
-                      </div>
-                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-                        Template
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div>
-                      <h3 className="font-semibold text-foreground line-clamp-2">
-                        {report.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                        {report.description}
-                      </p>
-                    </div>
-
-                    <div className="pt-2 border-t">
-                      <Badge variant="outline" className="text-xs">
-                        {report.type}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 mt-4 pt-4 border-t">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Eye className="w-3 h-3 mr-1" />
-                      View
-                    </Button>
-                    <Button size="sm" className="flex-1 bg-primary hover:bg-primary/90">
-                      <Copy className="w-3 h-3 mr-1" />
-                      Use Template
-                    </Button>
-                  </div>
                 </Card>
-              ))}
-            </div>
-          </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
