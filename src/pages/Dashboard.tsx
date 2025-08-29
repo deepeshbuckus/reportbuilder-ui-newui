@@ -190,8 +190,7 @@ const Dashboard = () => {
             Transform payroll data into insights with AI
           </h2>
           <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-            Ask simple questions, get detailed reports. Analyze your payroll history, earnings & deductions,
-            employee profiles, and more.
+            Ask simple questions, get detailed reports. Analyze your payroll history, earnings & deductions, employee profiles, and more.
           </p>
 
           {/* Feature Cards */}
