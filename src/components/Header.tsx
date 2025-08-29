@@ -2,14 +2,18 @@ import { Button } from "@/components/ui/button";
 import { FileText, Settings, User, LayoutDashboard, ArrowLeft } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useReports } from "@/contexts/ReportContext";
 
 export const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { currentReport } = useReports();
   
   const handleBack = () => {
     navigate(-1);
   };
+  
+  const showBackButton = currentReport !== null;
   
   return (
     <header className="h-12 border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50 flex items-center justify-between px-4">
@@ -52,10 +56,12 @@ export const Header = () => {
       </div>
       
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" onClick={handleBack} className="gap-2">
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </Button>
+        {showBackButton && (
+          <Button variant="ghost" size="sm" onClick={handleBack} className="gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+        )}
         <Button variant="ghost" size="sm">
           <Settings className="w-4 h-4" />
         </Button>
