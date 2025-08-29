@@ -271,15 +271,15 @@ const Dashboard = () => {
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4">
-                    <div className="text-xs text-muted-foreground">
+                  <div className="pt-4">
+                    <div className="text-xs text-muted-foreground mb-3">
                       Last run on {report.updatedAt.toLocaleDateString('en-US', { 
                         year: 'numeric', 
                         month: '2-digit', 
                         day: '2-digit' 
                       })}
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 justify-end">
                       <Button variant="outline" size="sm" className="text-xs">
                         <Edit className="w-3 h-3 mr-1" />
                         Edit report
