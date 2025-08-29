@@ -225,28 +225,6 @@ const Dashboard = () => {
             </div>
           </Card>
         </div>
-
-        {/* Prompting Tips Section */}
-        <div className="max-w-2xl mx-auto mt-8">
-          <Card className="p-6 bg-blue-50/50 border-blue-100">
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Lightbulb className="w-4 h-4 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium text-blue-900 mb-3">Prompting Tips</h3>
-                <ul className="space-y-2 text-sm text-blue-800">
-                  {promptingTips.map((tip, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="w-1 h-1 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
-                      <span>{tip}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Card>
-        </div>
       </div>
 
       {/* Main Content */}
