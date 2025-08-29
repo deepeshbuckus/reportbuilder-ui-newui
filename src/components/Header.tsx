@@ -13,17 +13,25 @@ export const Header = () => {
     navigate(-1);
   };
   
-  const showBackButton = currentReport !== null;
+  const showBackButton = currentReport !== null && location.pathname !== "/dashboard";
   
   return (
     <header className="h-12 border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50 flex items-center justify-between px-4">
       <div className="flex items-center gap-6">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-gradient-primary rounded flex items-center justify-center">
-            <FileText className="w-4 h-4 text-primary-foreground" />
-          </div>
-          <span className="font-semibold text-foreground">HR ReportBuilder</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          {showBackButton && (
+            <Button variant="ghost" size="sm" onClick={handleBack} className="gap-2 px-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          )}
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-gradient-primary rounded flex items-center justify-center">
+              <FileText className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <span className="font-semibold text-foreground">HR ReportBuilder</span>
+          </Link>
+        </div>
         
         <nav className="flex items-center gap-1">
           <Link to="/">
@@ -56,12 +64,6 @@ export const Header = () => {
       </div>
       
       <div className="flex items-center gap-2">
-        {showBackButton && (
-          <Button variant="ghost" size="sm" onClick={handleBack} className="gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </Button>
-        )}
         <Button variant="ghost" size="sm">
           <Settings className="w-4 h-4" />
         </Button>
