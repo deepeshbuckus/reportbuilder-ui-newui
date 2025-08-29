@@ -99,29 +99,32 @@ const renderApiDataTable = (apiData: { title: string; type: string; data: Record
   const headers = Object.keys(apiData.data[0]);
   
   return (
-    <div className="my-6 overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="border-b border-gray-200">
             {headers.map((header, i) => (
-              <TableHead key={i} className="font-semibold capitalize">
+              <th key={i} className="text-left py-3 px-4 font-semibold text-gray-900 text-sm">
                 {header.replace(/([A-Z])/g, ' $1').trim()}
-              </TableHead>
+              </th>
             ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {apiData.data.map((row, i) => (
-            <TableRow key={i}>
+          </tr>
+        </thead>
+        <tbody>
+          {apiData.data.slice(0, 7).map((row, i) => (
+            <tr key={i} className="border-b border-gray-100">
               {headers.map((header, j) => (
-                <TableCell key={j}>
-                  {row[header]}
-                </TableCell>
+                <td key={j} className="py-3 px-4 text-sm text-gray-700">
+                  {typeof row[header] === 'number' && header.toLowerCase().includes('pay') || 
+                   typeof row[header] === 'number' && header.toLowerCase().includes('deduction') ||
+                   typeof row[header] === 'number' && header.toLowerCase().includes('contribution') ? 
+                    `$${row[header].toLocaleString()}` : row[header]}
+                </td>
               ))}
-            </TableRow>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -226,32 +229,54 @@ export const ReportPreview = () => {
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-6">
           {currentReport ? (
-            <Card className="p-8 shadow-elegant">
-              <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-foreground mb-2">
+            <div className="bg-white p-8 rounded-lg shadow-sm border">
+              {/* Report Header */}
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">
                   {currentReport.title}
                 </h1>
-                <p className="text-muted-foreground">
+                <p className="text-sm text-gray-500 mb-4">
                   Generated on {currentReport.createdAt.toLocaleDateString()}
                 </p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {currentReport.description}
-                </p>
+                {currentReport.apiData && (
+                  <p className="text-sm text-gray-600">
+                    Showing {Math.min(currentReport.apiData.data?.length || 0, 7)} of {currentReport.apiData.data?.length || 0} rows. <span className="text-blue-600 cursor-pointer hover:underline">Export for full report.</span>
+                  </p>
+                )}
               </div>
 
-              <div className="prose prose-sm max-w-none">
-                <div className="text-muted-foreground leading-relaxed">
-                  {currentReport.apiData ? (
-                    <>
-                      {renderReportContent(currentReport.content)}
-                      {renderApiDataTable(currentReport.apiData)}
-                    </>
-                  ) : (
-                    renderReportContent(currentReport.content)
-                  )}
+              {/* Report Content */}
+              {currentReport.apiData ? (
+                <div className="space-y-6">
+                  {renderApiDataTable(currentReport.apiData)}
+                  
+                  {/* Download Section */}
+                  <div className="border-t pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-base font-medium text-gray-900 mb-1">
+                          Ready to download the full report?
+                        </p>
+                        <p className="text-sm text-blue-600">
+                          Export all {currentReport.apiData.data?.length || 0} rows to .xls format
+                        </p>
+                      </div>
+                      <Button 
+                        onClick={handleExport}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        Download
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Card>
+              ) : (
+                <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed">
+                  {renderReportContent(currentReport.content)}
+                </div>
+              )}
+            </div>
           ) : (
             <div className="flex items-center justify-center h-full min-h-[400px]">
               <div className="text-center">
