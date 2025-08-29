@@ -253,7 +253,7 @@ export const ReportPreview = () => {
               </div>
             </Card>
           ) : (
-            <Card className="p-8 shadow-elegant">
+            <div className="flex items-center justify-center h-full min-h-[400px]">
               <div className="text-center">
                 <h2 className="text-lg font-medium text-muted-foreground">
                   No Preview Available
@@ -262,7 +262,7 @@ export const ReportPreview = () => {
                   Generate a report to see the preview here
                 </p>
               </div>
-            </Card>
+            </div>
           )}
         </div>
       </ScrollArea>
