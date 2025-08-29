@@ -239,7 +239,7 @@ const Dashboard = () => {
           </div>
 
           {/* Search */}
-          <div className="relative mb-6 md:w-1/2">
+          <div className="relative mb-6 w-full md:max-w-[calc(50%-0.75rem)]">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search reports..."
