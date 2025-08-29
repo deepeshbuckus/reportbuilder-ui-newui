@@ -217,7 +217,7 @@ const Dashboard = () => {
           
         {/* Chat Input */}
         <div className="max-w-2xl mx-auto">
-          <Card className="p-1 shadow-lg border-blue-200 border-2">
+          <Card className="p-1 shadow-lg border-blue-200">
             <div className="flex items-center gap-3 p-3">
               <div className="flex-1">
                 <Input
