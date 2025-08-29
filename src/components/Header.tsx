@@ -29,38 +29,9 @@ export const Header = () => {
             <div className="w-6 h-6 bg-gradient-primary rounded flex items-center justify-center">
               <FileText className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-foreground">HR ReportBuilder</span>
+            <span className="font-semibold text-foreground">Payroll Intelligence</span>
           </Link>
         </div>
-        
-        <nav className="flex items-center gap-1">
-          <Link to="/">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className={cn(
-                "gap-2",
-                location.pathname === "/" && "bg-accent text-accent-foreground"
-              )}
-            >
-              <FileText className="w-4 h-4" />
-              Builder
-            </Button>
-          </Link>
-          <Link to="/dashboard">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className={cn(
-                "gap-2",
-                location.pathname === "/dashboard" && "bg-accent text-accent-foreground"
-              )}
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              Dashboard
-            </Button>
-          </Link>
-        </nav>
       </div>
       
       <div className="flex items-center gap-2">
