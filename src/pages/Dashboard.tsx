@@ -196,16 +196,11 @@ const Dashboard = () => {
           </p>
 
           {/* Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="flex justify-center gap-4 mb-8">
             {featureCards.map((card) => (
-              <Card key={card.title} className="p-4 text-center hover:shadow-md transition-smooth">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
-                  <card.icon className="w-5 h-5 text-primary" />
-                </div>
-                <Badge variant="secondary" className="mb-2">
-                  {card.title}
-                </Badge>
-              </Card>
+              <div key={card.title} className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center hover:bg-primary/20 transition-smooth cursor-pointer">
+                <card.icon className="w-6 h-6 text-primary" />
+              </div>
             ))}
           </div>
           
