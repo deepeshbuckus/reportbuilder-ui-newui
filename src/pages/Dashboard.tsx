@@ -229,16 +229,6 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="px-4 pb-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          {/* Search */}
-          <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search reports..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
 
           {/* Recent Reports Header */}
           <div className="mb-6">
@@ -246,6 +236,17 @@ const Dashboard = () => {
               <Clock className="w-6 h-6 text-muted-foreground" />
               <h2 className="text-2xl font-semibold text-foreground">Recent Reports</h2>
             </div>
+          </div>
+
+          {/* Search */}
+          <div className="relative max-w-md mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search reports..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
           </div>
 
           {/* Reports Grid */}
