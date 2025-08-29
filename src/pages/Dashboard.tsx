@@ -234,8 +234,8 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 pb-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+      <div className="px-2 pb-8">
+        <div className="max-w-6xl mx-auto space-y-6">
 
           {/* Recent Reports Header */}
           <div className="mb-6">
