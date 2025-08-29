@@ -174,51 +174,54 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="pt-16 pb-12">
-        <div className="max-w-4xl mx-auto text-center px-4">
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-white" />
-            </div>
-            <h1 className="text-lg font-semibold text-foreground">
-              Payroll Intelligence
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <div className="max-w-3xl mx-auto mb-8">
+            <h1 className="text-3xl font-medium text-gray-900 mb-4">
+              Transform payroll data into insights with AI
             </h1>
-          </div>
-          
-          <h2 className="text-4xl font-bold text-foreground mb-4">
-            Transform payroll data into insights with AI
-          </h2>
-          <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-            Ask simple questions, get detailed reports. Analyze your payroll history, earnings & deductions, employee profiles, and more.
-          </p>
-
-          {/* Feature Cards */}
-          <div className="flex justify-center gap-4 mb-8">
-            {featureCards.map((card) => (
-              <div key={card.title} className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-smooth cursor-pointer">
-                <card.icon className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">{card.title}</span>
-              </div>
-            ))}
-          </div>
-          
-          {/* Chat Input */}
-          <div className="max-w-2xl mx-auto">
-            <Card className="p-1 shadow-lg">
-              <div className="flex items-center gap-3 p-3">
-                <div className="flex-1">
-                  <Input
-                    placeholder="Ask for a custom payroll report"
-                    className="border-0 bg-transparent text-base placeholder:text-muted-foreground focus-visible:ring-0 px-0"
-                  />
+            <p className="text-lg text-gray-600 mb-6">
+              Ask simple questions, get detailed reports. Analyze your payroll history, earnings & deductions, employee profiles, and more.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600 mb-8">
+              <div className="flex items-center justify-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 text-blue-600" />
                 </div>
-                <Button size="sm" className="bg-primary hover:bg-primary/90">
-                  <Send className="w-4 h-4" />
-                </Button>
+                <span>Payroll Insights</span>
               </div>
-            </Card>
+              <div className="flex items-center justify-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Users className="w-4 h-4 text-blue-600" />
+                </div>
+                <span>Workforce Reports</span>
+              </div>
+              <div className="flex items-center justify-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-blue-600" />
+                </div>
+                <span>Trend Analysis</span>
+              </div>
+            </div>
           </div>
+        </div>
+          
+        {/* Chat Input */}
+        <div className="max-w-2xl mx-auto">
+          <Card className="p-1 shadow-lg">
+            <div className="flex items-center gap-3 p-3">
+              <div className="flex-1">
+                <Input
+                  placeholder="Ask for a custom payroll report"
+                  className="border-0 bg-transparent text-base placeholder:text-muted-foreground focus-visible:ring-0 px-0"
+                />
+              </div>
+              <Button size="sm" className="bg-primary hover:bg-primary/90">
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+          </Card>
         </div>
       </div>
 
