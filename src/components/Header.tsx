@@ -13,7 +13,7 @@ export const Header = () => {
     navigate(-1);
   };
   
-  const showBackButton = currentReport !== null && location.pathname !== "/dashboard";
+  const showBackButton = location.pathname !== "/dashboard";
   
   return (
     <header className="h-12 border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50 flex items-center justify-between px-4">
