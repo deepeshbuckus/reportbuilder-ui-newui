@@ -235,7 +235,7 @@ const Dashboard = () => {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4">
               <Clock className="w-6 h-6 text-muted-foreground" />
-              <h2 className="text-2xl font-semibold text-foreground">Recent Reports</h2>
+              <h2 className="text-xl font-medium text-muted-foreground">Recent Reports</h2>
             </div>
             <Separator />
           </div>
