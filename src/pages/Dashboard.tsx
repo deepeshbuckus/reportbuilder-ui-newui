@@ -279,12 +279,12 @@ const Dashboard = () => {
                   </div>
 
                   <div className="flex gap-2 justify-center">
-                    <Button variant="outline" size="sm" className="text-xs">
-                      <Edit className="w-3 h-3 mr-1" />
+                    <Button variant="outline" size="default" className="flex-1">
+                      <Edit className="w-4 h-4 mr-2" />
                       Edit report
                     </Button>
-                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs">
-                      <Eye className="w-3 h-3 mr-1" />
+                    <Button size="default" className="bg-primary hover:bg-primary/90 flex-1">
+                      <Eye className="w-4 h-4 mr-2" />
                       Run report
                     </Button>
                   </div>
