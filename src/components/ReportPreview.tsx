@@ -254,47 +254,13 @@ export const ReportPreview = () => {
             </Card>
           ) : (
             <Card className="p-8 shadow-elegant">
-              <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-foreground mb-2">
-                  Start Chatting to Generate Reports
-                </h1>
-                <p className="text-muted-foreground">
-                  Use the chat interface to generate comprehensive HR and payroll reports
+              <div className="text-center">
+                <h2 className="text-lg font-medium text-muted-foreground">
+                  No Preview Available
+                </h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Generate a report to see the preview here
                 </p>
-              </div>
-
-              <div className="space-y-8">
-                <section>
-                  <h2 className="text-xl font-semibold text-foreground mb-4">How it works</h2>
-                  <div className="prose prose-sm max-w-none">
-                    <p className="text-muted-foreground leading-relaxed">
-                      Simply describe what kind of report you need in the chat, and our AI will generate 
-                      a comprehensive analysis with insights, metrics, and recommendations tailored to your requirements.
-                    </p>
-                  </div>
-                </section>
-
-                <section>
-                  <h2 className="text-xl font-semibold text-foreground mb-4">Report Types</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card className="p-4">
-                      <div className="font-semibold text-foreground">Payroll Reports</div>
-                      <div className="text-sm text-muted-foreground">Salary analysis, overtime, deductions</div>
-                    </Card>
-                    <Card className="p-4">
-                      <div className="font-semibold text-foreground">Benefits Analysis</div>
-                      <div className="text-sm text-muted-foreground">Healthcare, retirement, benefits costs</div>
-                    </Card>
-                    <Card className="p-4">
-                      <div className="font-semibold text-foreground">Attendance Tracking</div>
-                      <div className="text-sm text-muted-foreground">PTO, sick leave, attendance patterns</div>
-                    </Card>
-                    <Card className="p-4">
-                      <div className="font-semibold text-foreground">Demographics</div>
-                      <div className="text-sm text-muted-foreground">Workforce composition and diversity</div>
-                    </Card>
-                  </div>
-                </section>
               </div>
             </Card>
           )}
