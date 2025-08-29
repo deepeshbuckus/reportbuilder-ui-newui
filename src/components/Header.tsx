@@ -1,0 +1,59 @@
+import { Button } from "@/components/ui/button";
+import { FileText, Settings, User, LayoutDashboard } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
+
+export const Header = () => {
+  const location = useLocation();
+  
+  return (
+    <header className="h-12 border-b bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50 flex items-center justify-between px-4">
+      <div className="flex items-center gap-6">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-6 h-6 bg-gradient-primary rounded flex items-center justify-center">
+            <FileText className="w-4 h-4 text-primary-foreground" />
+          </div>
+          <span className="font-semibold text-foreground">HR ReportBuilder</span>
+        </Link>
+        
+        <nav className="flex items-center gap-1">
+          <Link to="/">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className={cn(
+                "gap-2",
+                location.pathname === "/" && "bg-accent text-accent-foreground"
+              )}
+            >
+              <FileText className="w-4 h-4" />
+              Builder
+            </Button>
+          </Link>
+          <Link to="/dashboard">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className={cn(
+                "gap-2",
+                location.pathname === "/dashboard" && "bg-accent text-accent-foreground"
+              )}
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              Dashboard
+            </Button>
+          </Link>
+        </nav>
+      </div>
+      
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="sm">
+          <Settings className="w-4 h-4" />
+        </Button>
+        <Button variant="ghost" size="sm">
+          <User className="w-4 h-4" />
+        </Button>
+      </div>
+    </header>
+  );
+};
