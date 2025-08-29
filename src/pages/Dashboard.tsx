@@ -18,7 +18,8 @@ import {
   Users,
   TrendingUp,
   Lightbulb,
-  Send
+  Send,
+  Clock
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -241,7 +242,10 @@ const Dashboard = () => {
 
           {/* Recent Reports Header */}
           <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-foreground">Recent Reports</h2>
+            <div className="flex items-center gap-2">
+              <Clock className="w-6 h-6 text-muted-foreground" />
+              <h2 className="text-2xl font-semibold text-foreground">Recent Reports</h2>
+            </div>
           </div>
 
           {/* Reports Grid */}
