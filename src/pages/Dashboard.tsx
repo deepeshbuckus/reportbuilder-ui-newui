@@ -239,6 +239,11 @@ const Dashboard = () => {
             />
           </div>
 
+          {/* Recent Reports Header */}
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-foreground">Recent Reports</h2>
+          </div>
+
           {/* Reports Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredReports.slice(0, 6).map((report) => (
