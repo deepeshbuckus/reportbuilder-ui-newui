@@ -266,12 +266,6 @@ const Dashboard = () => {
                     <h3 className="font-semibold text-foreground text-lg mb-2">
                       {report.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {report.description}
-                    </p>
-                  </div>
-
-                  <div>
                     <div className="text-xs text-muted-foreground mb-3">
                       Last run on {report.updatedAt.toLocaleDateString('en-US', { 
                         year: 'numeric', 
@@ -279,16 +273,20 @@ const Dashboard = () => {
                         day: '2-digit' 
                       })}
                     </div>
-                    <div className="flex gap-2 justify-center">
-                      <Button variant="outline" size="sm" className="text-xs">
-                        <Edit className="w-3 h-3 mr-1" />
-                        Edit report
-                      </Button>
-                      <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs">
-                        <Eye className="w-3 h-3 mr-1" />
-                        Run report
-                      </Button>
-                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {report.description}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-2 justify-center">
+                    <Button variant="outline" size="sm" className="text-xs">
+                      <Edit className="w-3 h-3 mr-1" />
+                      Edit report
+                    </Button>
+                    <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs">
+                      <Eye className="w-3 h-3 mr-1" />
+                      Run report
+                    </Button>
                   </div>
                 </div>
               </Card>
