@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useReports } from "@/contexts/ReportContext";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -138,7 +139,12 @@ const prebuiltReports: Report[] = [
 
 const Dashboard = () => {
   const { reports } = useReports();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handleChatRedirect = () => {
+    navigate("/");
+  };
 
   const filteredReports = reports.filter(report =>
     report.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -219,7 +225,7 @@ const Dashboard = () => {
                   className="border-0 bg-transparent text-base placeholder:text-muted-foreground focus-visible:ring-0 px-0"
                 />
               </div>
-              <Button size="sm" className="bg-primary hover:bg-primary/90">
+              <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={handleChatRedirect}>
                 <Send className="w-4 h-4" />
               </Button>
             </div>
