@@ -240,74 +240,36 @@ const Dashboard = () => {
           {/* Reports Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredReports.slice(0, 6).map((report) => (
-              <Card key={report.id} className="p-6 hover:shadow-lg transition-smooth group">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                      <FileText className="w-4 h-4 text-accent-foreground" />
-                    </div>
-                    <Badge 
-                      variant={report.status === 'published' ? 'default' : 'secondary'}
-                      className="text-xs"
-                    >
-                      {report.status}
-                    </Badge>
-                  </div>
-                  
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-smooth">
-                        <MoreVertical className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Eye className="w-4 h-4 mr-2" />
-                        View Report
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Copy className="w-4 h-4 mr-2" />
-                        Duplicate
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                <div className="space-y-3">
+              <Card key={report.id} className="p-6 hover:shadow-lg transition-smooth">
+                <div className="space-y-4">
                   <div>
-                    <h3 className="font-semibold text-foreground line-clamp-2">
+                    <h3 className="font-semibold text-foreground text-lg mb-2">
                       {report.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {report.description}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Calendar className="w-3 h-3" />
-                    Updated {report.updatedAt.toLocaleDateString()}
+                  <div className="flex items-center justify-between pt-4">
+                    <div className="text-xs text-muted-foreground">
+                      Last run on {report.updatedAt.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: '2-digit', 
+                        day: '2-digit' 
+                      })}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="text-xs">
+                        <Edit className="w-3 h-3 mr-1" />
+                        Edit report
+                      </Button>
+                      <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs">
+                        <Eye className="w-3 h-3 mr-1" />
+                        Run report
+                      </Button>
+                    </div>
                   </div>
-
-                  <div className="pt-2 border-t">
-                    <Badge variant="outline" className="text-xs">
-                      {report.type}
-                    </Badge>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 mt-4 pt-4 border-t">
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <Eye className="w-3 h-3 mr-1" />
-                    View
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <Copy className="w-3 h-3 mr-1" />
-                    Duplicate
-                  </Button>
                 </div>
               </Card>
             ))}
