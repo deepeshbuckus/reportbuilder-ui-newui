@@ -52,10 +52,6 @@ const Dashboard = () => {
         const response = await fetch('http://localhost:8085/api/reports?onlyMapped=true');
         const data = await response.json();
         
-        console.log('API Response:', data);
-        console.log('Is Array:', Array.isArray(data));
-        console.log('Type:', typeof data);
-        
         // Handle both array and object formats
         let reportsArray: Report[];
         if (Array.isArray(data)) {
@@ -63,12 +59,14 @@ const Dashboard = () => {
         } else if (typeof data === 'object' && data !== null) {
           // Convert object with numeric keys to array
           reportsArray = Object.values(data);
-          console.log('Converted to array:', reportsArray);
         } else {
           reportsArray = [];
         }
         
-        setReports(reportsArray);
+        // Filter to only show mapped reports as an additional safety measure
+        const mappedReports = reportsArray.filter(report => report.mapped === true);
+        
+        setReports(mappedReports);
       } catch (error) {
         console.error('Failed to fetch reports:', error);
       } finally {
@@ -113,7 +111,10 @@ const Dashboard = () => {
           reportsArray = [];
         }
         
-        setReports(reportsArray);
+        // Filter to only show mapped reports as an additional safety measure
+        const mappedReports = reportsArray.filter(report => report.mapped === true);
+        
+        setReports(mappedReports);
       }
     } catch (error) {
       console.error('Failed to update report name:', error);
