@@ -63,10 +63,7 @@ const Dashboard = () => {
           reportsArray = [];
         }
         
-        // Filter to only show mapped reports as an additional safety measure
-        const mappedReports = reportsArray.filter(report => report.mapped === true);
-        
-        setReports(mappedReports);
+        setReports(reportsArray);
       } catch (error) {
         console.error('Failed to fetch reports:', error);
       } finally {
@@ -111,10 +108,7 @@ const Dashboard = () => {
           reportsArray = [];
         }
         
-        // Filter to only show mapped reports as an additional safety measure
-        const mappedReports = reportsArray.filter(report => report.mapped === true);
-        
-        setReports(mappedReports);
+        setReports(reportsArray);
       }
     } catch (error) {
       console.error('Failed to update report name:', error);
