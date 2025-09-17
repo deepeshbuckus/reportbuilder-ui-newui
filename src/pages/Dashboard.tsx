@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useReports } from "@/contexts/ReportContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -32,124 +32,43 @@ import {
 import { Link } from "react-router-dom";
 
 interface Report {
-  id: string;
-  title: string;
-  description: string;
-  createdAt: Date;
-  updatedAt: Date;
-  status: 'draft' | 'published' | 'archived';
-  type: string;
+  conversationId: string;
+  defaultTitle: string;
+  reportName: string;
+  createdAt: string;
+  mapped: boolean;
 }
 
-const mockReports: Report[] = [
-  {
-    id: '1',
-    title: 'Q4 Payroll Summary Report',
-    description: 'Comprehensive quarterly payroll analysis including salary distributions, overtime costs, and tax withholdings.',
-    createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-18'),
-    status: 'published',
-    type: 'Payroll'
-  },
-  {
-    id: '2',
-    title: 'Employee Benefits Analysis',
-    description: 'Detailed breakdown of healthcare, retirement contributions, and other employee benefits costs.',
-    createdAt: new Date('2024-01-12'),
-    updatedAt: new Date('2024-01-16'),
-    status: 'draft',
-    type: 'Benefits'
-  },
-  {
-    id: '3',
-    title: 'Time & Attendance Report',
-    description: 'Monthly analysis of employee attendance, PTO usage, sick leave, and overtime patterns.',
-    createdAt: new Date('2024-01-10'),
-    updatedAt: new Date('2024-01-14'),
-    status: 'published',
-    type: 'Attendance'
-  },
-  {
-    id: '4',
-    title: 'Workforce Demographics Report',
-    description: 'HR analytics on employee demographics, diversity metrics, and workforce composition.',
-    createdAt: new Date('2024-01-08'),
-    updatedAt: new Date('2024-01-12'),
-    status: 'archived',
-    type: 'Demographics'
-  }
-];
-
-const prebuiltReports: Report[] = [
-  {
-    id: 'pb1',
-    title: 'Monthly Payroll Summary Template',
-    description: 'Ready-to-use template for monthly payroll summaries including gross pay, deductions, and net pay analysis.',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    status: 'published',
-    type: 'Payroll Template'
-  },
-  {
-    id: 'pb2',
-    title: 'Employee Onboarding Report',
-    description: 'Track new hire progress, documentation completion, and onboarding milestones.',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    status: 'published',
-    type: 'HR Template'
-  },
-  {
-    id: 'pb3',
-    title: 'PTO Balance Report',
-    description: 'Monitor employee vacation days, sick leave balances, and upcoming time-off requests.',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    status: 'published',
-    type: 'Attendance Template'
-  },
-  {
-    id: 'pb4',
-    title: 'Performance Review Summary',
-    description: 'Comprehensive template for quarterly and annual performance evaluations and ratings.',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    status: 'published',
-    type: 'Performance Template'
-  },
-  {
-    id: 'pb5',
-    title: 'Compliance Audit Report',
-    description: 'Track regulatory compliance, document reviews, and audit findings for HR processes.',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    status: 'published',
-    type: 'Compliance Template'
-  },
-  {
-    id: 'pb6',
-    title: 'Salary Benchmarking Analysis',
-    description: 'Compare employee compensation against industry standards and market rates.',
-    createdAt: new Date('2024-01-01'),
-    updatedAt: new Date('2024-01-01'),
-    status: 'published',
-    type: 'Compensation Template'
-  }
-];
 
 const Dashboard = () => {
-  const { reports } = useReports();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const response = await fetch('http://localhost:8085/api/reports?onlyMapped=true');
+        const data = await response.json();
+        setReports(data);
+      } catch (error) {
+        console.error('Failed to fetch reports:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
+  }, []);
 
   const handleChatRedirect = () => {
     navigate("/");
   };
 
   const filteredReports = reports.filter(report =>
-    report.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    report.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    report.type.toLowerCase().includes(searchQuery.toLowerCase())
+    report.reportName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    report.defaultTitle.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const featureCards = [
@@ -259,38 +178,42 @@ const Dashboard = () => {
 
           {/* Reports Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {filteredReports.slice(0, 6).map((report) => (
-              <Card key={report.id} className="p-6 hover:shadow-lg transition-smooth hover:border-blue-500 hover:border-2 cursor-pointer h-64">
-                <div className="flex flex-col h-full justify-between">
-                  <div>
-                    <h3 className="font-semibold text-foreground text-lg mb-2">
-                      {report.title}
-                    </h3>
-                    <div className="text-xs text-muted-foreground mb-3">
-                      Last run on {report.updatedAt.toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: '2-digit', 
-                        day: '2-digit' 
-                      })}
+            {loading ? (
+              <div className="col-span-full text-center text-muted-foreground">Loading reports...</div>
+            ) : (
+              filteredReports.slice(0, 6).map((report) => (
+                <Card key={report.conversationId} className="p-6 hover:shadow-lg transition-smooth hover:border-blue-500 hover:border-2 cursor-pointer h-64">
+                  <div className="flex flex-col h-full justify-between">
+                    <div>
+                      <h3 className="font-semibold text-foreground text-lg mb-2">
+                        {report.reportName}
+                      </h3>
+                      <div className="text-xs text-muted-foreground mb-3">
+                        Created on {new Date(report.createdAt).toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: '2-digit', 
+                          day: '2-digit' 
+                        })}
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {report.defaultTitle}
+                      </p>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {report.description}
-                    </p>
-                  </div>
 
-                  <div className="flex gap-2 justify-center">
-                    <Button variant="outline" size="default" className="flex-1">
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit report
-                    </Button>
-                    <Button size="default" className="bg-primary hover:bg-primary/90 flex-1">
-                      <Eye className="w-4 h-4 mr-2" />
-                      Run report
-                    </Button>
+                    <div className="flex gap-2 justify-center">
+                      <Button variant="outline" size="default" className="flex-1">
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit report
+                      </Button>
+                      <Button size="default" className="bg-primary hover:bg-primary/90 flex-1">
+                        <Eye className="w-4 h-4 mr-2" />
+                        Run report
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))
+            )}
           </div>
 
           {filteredReports.length === 0 && (
