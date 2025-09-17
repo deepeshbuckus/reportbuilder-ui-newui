@@ -93,7 +93,7 @@ const Dashboard = () => {
   };
 
   const filteredReports = reports.filter(report =>
-    report.reportName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (report.reportName?.toLowerCase().includes(searchQuery.toLowerCase()) || false) ||
     report.defaultTitle.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
