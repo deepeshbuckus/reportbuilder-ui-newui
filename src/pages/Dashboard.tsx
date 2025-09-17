@@ -51,7 +51,19 @@ const Dashboard = () => {
       try {
         const response = await fetch('http://localhost:8085/api/reports?onlyMapped=true');
         const data = await response.json();
-        setReports(data);
+        
+        // Handle both array and object formats
+        let reportsArray: Report[];
+        if (Array.isArray(data)) {
+          reportsArray = data;
+        } else if (typeof data === 'object' && data !== null) {
+          // Convert object with numeric keys to array
+          reportsArray = Object.values(data);
+        } else {
+          reportsArray = [];
+        }
+        
+        setReports(reportsArray);
       } catch (error) {
         console.error('Failed to fetch reports:', error);
       } finally {
@@ -85,7 +97,18 @@ const Dashboard = () => {
         // Refresh reports after successful update
         const reportsResponse = await fetch('http://localhost:8085/api/reports?onlyMapped=true');
         const data = await reportsResponse.json();
-        setReports(data);
+        
+        // Handle both array and object formats
+        let reportsArray: Report[];
+        if (Array.isArray(data)) {
+          reportsArray = data;
+        } else if (typeof data === 'object' && data !== null) {
+          reportsArray = Object.values(data);
+        } else {
+          reportsArray = [];
+        }
+        
+        setReports(reportsArray);
       }
     } catch (error) {
       console.error('Failed to update report name:', error);
