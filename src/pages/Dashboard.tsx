@@ -66,6 +66,32 @@ const Dashboard = () => {
     navigate("/");
   };
 
+  const handleUpdateReportName = async (conversationId: string, newName: string) => {
+    try {
+      const response = await fetch('http://localhost:8085/api/reports/mappings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          conversationId,
+          reportName: newName,
+          description: "Updated report name",
+          active: true
+        }),
+      });
+
+      if (response.ok) {
+        // Refresh reports after successful update
+        const reportsResponse = await fetch('http://localhost:8085/api/reports?onlyMapped=true');
+        const data = await reportsResponse.json();
+        setReports(data);
+      }
+    } catch (error) {
+      console.error('Failed to update report name:', error);
+    }
+  };
+
   const filteredReports = reports.filter(report =>
     report.reportName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     report.defaultTitle.toLowerCase().includes(searchQuery.toLowerCase())
@@ -186,7 +212,7 @@ const Dashboard = () => {
                   <div className="flex flex-col h-full justify-between">
                     <div>
                       <h3 className="font-semibold text-foreground text-lg mb-2">
-                        {report.reportName}
+                        {report.reportName || "Untitled Report - Click to edit"}
                       </h3>
                       <div className="text-xs text-muted-foreground mb-3">
                         Created on {new Date(report.createdAt).toLocaleDateString('en-US', { 
@@ -201,9 +227,19 @@ const Dashboard = () => {
                     </div>
 
                     <div className="flex gap-2 justify-center">
-                      <Button variant="outline" size="default" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        size="default" 
+                        className="flex-1"
+                        onClick={() => {
+                          const newName = prompt('Enter new report name:', report.reportName || '');
+                          if (newName && newName.trim()) {
+                            handleUpdateReportName(report.conversationId, newName.trim());
+                          }
+                        }}
+                      >
                         <Edit className="w-4 h-4 mr-2" />
-                        Edit report
+                        {report.reportName ? 'Edit report' : 'Set name'}
                       </Button>
                       <Button size="default" className="bg-primary hover:bg-primary/90 flex-1">
                         <Eye className="w-4 h-4 mr-2" />
