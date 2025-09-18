@@ -33,6 +33,7 @@ export const ChatInterface = () => {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [chatHistoryLoaded, setChatHistoryLoaded] = useState(false);
 
   // Initialize chat history when there's an existing session or loaded data
   useEffect(() => {
@@ -130,10 +131,11 @@ export const ChatInterface = () => {
         // Clear the localStorage after loading
         localStorage.removeItem('loadedChatHistory');
         localStorage.removeItem('loadedConversationId');
+        setChatHistoryLoaded(true);
       } catch (error) {
         console.error('Error parsing loaded chat history:', error);
       }
-    } else if (currentReport && messageId && conversationId) {
+    } else if (currentReport && messageId && conversationId && !chatHistoryLoaded) {
       // Fallback to existing logic for current report
       let originalPrompt = "Previous query";
       
