@@ -28,6 +28,7 @@ interface ReportContextType {
   generateReportFromPrompt: (prompt: string, apiData?: { title: string; type: string; data: Record<string, any>[] }) => Promise<Report>;
   startNewChat: (content: string) => Promise<{ messageId: string; conversationId: string }>;
   setSessionData: (messageId: string, conversationId: string) => void;
+  setMessageId: (messageId: string) => void;
 }
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
@@ -243,7 +244,8 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
       setCurrentReport,
       generateReportFromPrompt,
       startNewChat,
-      setSessionData
+      setSessionData,
+      setMessageId
     }}>
       {children}
     </ReportContext.Provider>

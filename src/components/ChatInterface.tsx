@@ -22,7 +22,7 @@ const promptingTips = [
 ];
 
 export const ChatInterface = () => {
-  const { generateReportFromPrompt, currentReport, messageId, conversationId } = useReports();
+  const { generateReportFromPrompt, currentReport, messageId, conversationId, setMessageId } = useReports();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -43,6 +43,11 @@ export const ChatInterface = () => {
     if (loadedChatHistory && loadedConversationId) {
       try {
         const parsedHistory = JSON.parse(loadedChatHistory);
+        // Save the message ID from index 0 (latest message)
+        if (parsedHistory.length > 0 && parsedHistory[0].id) {
+          setMessageId(parsedHistory[0].id);
+        }
+        
         // Transform API messages to our Message format - reverse since index 0 is latest
         const transformedMessages: Message[] = parsedHistory.reverse().map((msg: any, index: number) => ({
           id: msg.id || `loaded-${index}`,
