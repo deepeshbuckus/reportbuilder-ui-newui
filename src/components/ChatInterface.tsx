@@ -34,10 +34,41 @@ export const ChatInterface = () => {
   const [inputValue, setInputValue] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Initialize chat history when there's an existing session
+  // Initialize chat history when there's an existing session or loaded data
   useEffect(() => {
-    if (currentReport && messageId && conversationId) {
-      // Extract the original prompt from the report description
+    // Check for loaded chat history from localStorage (when editing a report)
+    const loadedChatHistory = localStorage.getItem('loadedChatHistory');
+    const loadedConversationId = localStorage.getItem('loadedConversationId');
+    
+    if (loadedChatHistory && loadedConversationId) {
+      try {
+        const parsedHistory = JSON.parse(loadedChatHistory);
+        // Transform API messages to our Message format
+        const transformedMessages: Message[] = parsedHistory.map((msg: any, index: number) => ({
+          id: msg.id || `loaded-${index}`,
+          content: msg.content || msg.message || '',
+          sender: msg.role === 'user' ? 'user' : 'assistant',
+          timestamp: new Date(msg.timestamp || Date.now())
+        }));
+        
+        setMessages([
+          {
+            id: '1',
+            content: "Hello! I'm your AI HR report assistant. Tell me what kind of payroll or HR report you'd like to create - such as payroll summaries, benefits analysis, time tracking, or workforce demographics.",
+            sender: 'assistant',
+            timestamp: new Date()
+          },
+          ...transformedMessages
+        ]);
+        
+        // Clear the localStorage after loading
+        localStorage.removeItem('loadedChatHistory');
+        localStorage.removeItem('loadedConversationId');
+      } catch (error) {
+        console.error('Error parsing loaded chat history:', error);
+      }
+    } else if (currentReport && messageId && conversationId) {
+      // Fallback to existing logic for current report
       const description = currentReport.description;
       const promptMatch = description.match(/Report generated from prompt: "(.+?)"/);
       const originalPrompt = promptMatch ? promptMatch[1] : "Previous query";

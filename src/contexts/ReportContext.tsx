@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export interface Report {
   id: string;
@@ -108,6 +108,19 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   const [currentReport, setCurrentReport] = useState<Report | null>(null);
   const [messageId, setMessageId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
+
+  // Check for loaded conversation ID on mount
+  useEffect(() => {
+    const loadedConversationId = localStorage.getItem('loadedConversationId');
+    if (loadedConversationId) {
+      setConversationId(loadedConversationId);
+      // Find the report with this conversation ID and set it as current
+      const matchingReport = reports.find(report => report.id === loadedConversationId);
+      if (matchingReport) {
+        setCurrentReport(matchingReport);
+      }
+    }
+  }, [reports]);
 
   const addReport = (reportData: Omit<Report, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newReport: Report = {
