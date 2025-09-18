@@ -196,6 +196,14 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
       
       setMessageId(messageId);
       setConversationId(conversationId);
+
+      // If there's data in the response, create a report
+      if (data.result?.statement_response?.result?.data_array) {
+        const apiData = transformApiResponse(data.result.statement_response, content);
+        const newReport = createReportFromApiData(content, apiData);
+        addReport(newReport);
+        return { messageId, conversationId };
+      }
       
       return { messageId, conversationId };
     } catch (error) {
@@ -225,6 +233,37 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </ReportContext.Provider>
   );
+};
+
+const transformApiResponse = (statementResponse: any, prompt: string) => {
+  const columns = statementResponse.manifest.schema.columns;
+  const dataArray = statementResponse.result.data_array;
+  
+  // Transform data array into objects
+  const data = dataArray.map((row: any[]) => {
+    const obj: Record<string, any> = {};
+    columns.forEach((col: any, index: number) => {
+      obj[col.name] = row[index];
+    });
+    return obj;
+  });
+
+  return {
+    title: `Query Results: ${prompt.substring(0, 50)}...`,
+    type: 'Query Results',
+    data: data
+  };
+};
+
+const createReportFromApiData = (prompt: string, apiData: { title: string; type: string; data: Record<string, any>[] }): Omit<Report, 'id' | 'createdAt' | 'updatedAt'> => {
+  return {
+    title: apiData.title,
+    description: `Report generated from prompt: "${prompt.substring(0, 100)}${prompt.length > 100 ? '...' : ''}"`,
+    content: generateContentFromApiData(apiData, prompt),
+    status: 'draft',
+    type: apiData.type,
+    apiData: apiData
+  };
 };
 
 const generateContentFromApiData = (apiData: { title: string; type: string; data: Record<string, any>[] }, prompt: string): string => {

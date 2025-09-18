@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -22,7 +22,7 @@ const promptingTips = [
 ];
 
 export const ChatInterface = () => {
-  const { generateReportFromPrompt } = useReports();
+  const { generateReportFromPrompt, currentReport, messageId, conversationId } = useReports();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -33,6 +33,39 @@ export const ChatInterface = () => {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Initialize chat history when there's an existing session
+  useEffect(() => {
+    if (currentReport && messageId && conversationId) {
+      // Extract the original prompt from the report description
+      const description = currentReport.description;
+      const promptMatch = description.match(/Report generated from prompt: "(.+?)"/);
+      const originalPrompt = promptMatch ? promptMatch[1] : "Previous query";
+
+      const chatHistory: Message[] = [
+        {
+          id: '1',
+          content: "Hello! I'm your AI HR report assistant. Tell me what kind of payroll or HR report you'd like to create - such as payroll summaries, benefits analysis, time tracking, or workforce demographics.",
+          sender: 'assistant',
+          timestamp: new Date(currentReport.createdAt.getTime() - 1000)
+        },
+        {
+          id: '2',
+          content: originalPrompt,
+          sender: 'user',
+          timestamp: currentReport.createdAt
+        },
+        {
+          id: '3',
+          content: `Perfect! I've generated a comprehensive ${currentReport.type} report titled "${currentReport.title}". The report includes detailed analysis with ${currentReport.apiData?.data?.length || 0} records. You can view the full report in the preview panel and access it from your dashboard.`,
+          sender: 'assistant',
+          timestamp: new Date(currentReport.createdAt.getTime() + 1000)
+        }
+      ];
+
+      setMessages(chatHistory);
+    }
+  }, [currentReport, messageId, conversationId]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isGenerating) return;
