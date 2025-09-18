@@ -51,7 +51,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await fetch('http://localhost:8085/api/reports?onlyMapped=true');
+        const response = await fetch('https://localhost:60400/api/reports?onlyMapped=true');
         const data = await response.json();
         
         // Handle both array and object formats
@@ -131,7 +131,7 @@ const Dashboard = () => {
 
   const handleUpdateReportName = async (conversationId: string, newName: string) => {
     try {
-      const response = await fetch('http://localhost:8085/api/reports/mappings', {
+      const response = await fetch('https://localhost:60400/api/reports/mappings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ const Dashboard = () => {
 
       if (response.ok) {
         // Refresh reports after successful update
-        const reportsResponse = await fetch('http://localhost:8085/api/reports?onlyMapped=true');
+        const reportsResponse = await fetch('https://localhost:60400/api/reports?onlyMapped=true');
         const data = await reportsResponse.json();
         
         // Handle both array and object formats
