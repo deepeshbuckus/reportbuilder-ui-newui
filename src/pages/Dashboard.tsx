@@ -109,16 +109,21 @@ const Dashboard = () => {
           const data = await response.json();
           allMessages = [...allMessages, ...(data.messages || [])];
           pageToken = data.next_page_token;
-          
-          console.log('Chat history page:', data);
         } else {
           console.error('Failed to fetch conversation messages:', response.status);
           break;
         }
       } while (pageToken);
 
-      console.log('Complete chat history:', allMessages);
-      // Handle the complete chat history here
+      // Set the session data and navigate to chat
+      if (allMessages.length > 0) {
+        // Store the chat history in localStorage for the chat interface to pick up
+        localStorage.setItem('loadedChatHistory', JSON.stringify(allMessages));
+        localStorage.setItem('loadedConversationId', conversationId);
+        
+        // Navigate to the chat page
+        navigate("/");
+      }
     } catch (error) {
       console.error('Failed to load chat history:', error);
     }
