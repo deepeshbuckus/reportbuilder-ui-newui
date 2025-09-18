@@ -9,6 +9,7 @@ export interface Report {
   updatedAt: Date;
   status: 'draft' | 'published' | 'archived';
   type: string;
+  attachmentId?: string;
   apiData?: {
     title: string;
     type: string;
@@ -206,6 +207,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
       const data = await response.json();
       const messageId = data.message_id;
       const conversationId = data.conversation_id;
+      const attachmentId = data.attachment_id;
       
       setMessageId(messageId);
       setConversationId(conversationId);
@@ -213,7 +215,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
       // If there's data in the response, create a report
       if (data.result?.statement_response?.result?.data_array) {
         const apiData = transformApiResponse(data.result.statement_response, content);
-        const newReport = createReportFromApiData(content, apiData);
+        const newReport = createReportFromApiData(content, apiData, attachmentId);
         addReport(newReport);
         return { messageId, conversationId };
       }
@@ -268,13 +270,14 @@ const transformApiResponse = (statementResponse: any, prompt: string) => {
   };
 };
 
-const createReportFromApiData = (prompt: string, apiData: { title: string; type: string; data: Record<string, any>[] }): Omit<Report, 'id' | 'createdAt' | 'updatedAt'> => {
+const createReportFromApiData = (prompt: string, apiData: { title: string; type: string; data: Record<string, any>[] }, attachmentId?: string): Omit<Report, 'id' | 'createdAt' | 'updatedAt'> => {
   return {
     title: apiData.title,
     description: `Report generated from prompt: "${prompt.substring(0, 100)}${prompt.length > 100 ? '...' : ''}"`,
     content: generateContentFromApiData(apiData, prompt),
     status: 'draft',
     type: apiData.type,
+    attachmentId: attachmentId,
     apiData: apiData
   };
 };
