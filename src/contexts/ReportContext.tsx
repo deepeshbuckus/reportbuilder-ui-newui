@@ -19,10 +19,14 @@ export interface Report {
 interface ReportContextType {
   reports: Report[];
   currentReport: Report | null;
+  messageId: string | null;
+  conversationId: string | null;
   addReport: (report: Omit<Report, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateReport: (id: string, updates: Partial<Report>) => void;
   setCurrentReport: (report: Report | null) => void;
   generateReportFromPrompt: (prompt: string, apiData?: { title: string; type: string; data: Record<string, any>[] }) => Promise<Report>;
+  startNewChat: (content: string) => Promise<{ messageId: string; conversationId: string }>;
+  setSessionData: (messageId: string, conversationId: string) => void;
 }
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
@@ -102,6 +106,8 @@ const initialReports: Report[] = [
 export const ReportProvider = ({ children }: { children: ReactNode }) => {
   const [reports, setReports] = useState<Report[]>(initialReports);
   const [currentReport, setCurrentReport] = useState<Report | null>(null);
+  const [messageId, setMessageId] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null);
 
   const addReport = (reportData: Omit<Report, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newReport: Report = {
@@ -170,14 +176,51 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const startNewChat = async (content: string): Promise<{ messageId: string; conversationId: string }> => {
+    try {
+      const response = await fetch('https://localhost:60400/api/reports/start', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const messageId = data.message_id;
+      const conversationId = data.conversation_id;
+      
+      setMessageId(messageId);
+      setConversationId(conversationId);
+      
+      return { messageId, conversationId };
+    } catch (error) {
+      console.error('Error starting new chat:', error);
+      throw error;
+    }
+  };
+
+  const setSessionData = (messageId: string, conversationId: string) => {
+    setMessageId(messageId);
+    setConversationId(conversationId);
+  };
+
   return (
     <ReportContext.Provider value={{
       reports,
       currentReport,
+      messageId,
+      conversationId,
       addReport,
       updateReport,
       setCurrentReport,
-      generateReportFromPrompt
+      generateReportFromPrompt,
+      startNewChat,
+      setSessionData
     }}>
       {children}
     </ReportContext.Provider>

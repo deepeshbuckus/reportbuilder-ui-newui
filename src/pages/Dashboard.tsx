@@ -42,7 +42,9 @@ interface Report {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { startNewChat } = useReports();
   const [searchQuery, setSearchQuery] = useState("");
+  const [chatInput, setChatInput] = useState("");
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -74,8 +76,15 @@ const Dashboard = () => {
     fetchReports();
   }, []);
 
-  const handleChatRedirect = () => {
-    navigate("/");
+  const handleChatRedirect = async () => {
+    if (!chatInput.trim()) return;
+    
+    try {
+      await startNewChat(chatInput);
+      navigate("/");
+    } catch (error) {
+      console.error('Failed to start new chat:', error);
+    }
   };
 
   const handleUpdateReportName = async (conversationId: string, newName: string) => {
@@ -190,6 +199,9 @@ const Dashboard = () => {
               <div className="flex-1">
                 <Input
                   placeholder="Ask for a custom payroll report"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleChatRedirect()}
                   className="border-0 bg-transparent text-base placeholder:text-muted-foreground focus-visible:ring-0 px-0"
                 />
               </div>
