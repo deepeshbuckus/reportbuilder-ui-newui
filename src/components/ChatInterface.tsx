@@ -22,7 +22,7 @@ const promptingTips = [
 ];
 
 export const ChatInterface = () => {
-  const { generateReportFromPrompt, currentReport, messageId, conversationId, setMessageId, sendChatMessage } = useReports();
+  const { generateReportFromPrompt, currentReport, messageId, conversationId, setMessageId, sendChatMessage, fetchAttachmentResult, setSessionData } = useReports();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -46,6 +46,21 @@ export const ChatInterface = () => {
         // Save the message ID from index 0 (latest message)
         if (parsedHistory.length > 0 && parsedHistory[0].id) {
           setMessageId(parsedHistory[0].id);
+          
+          // Set session data for the loaded conversation
+          setSessionData(parsedHistory[0].id, loadedConversationId);
+          
+          // Find the latest message with an attachment and fetch its result
+          const latestMessageWithAttachment = parsedHistory.find((msg: any) => msg.attachmentId);
+          if (latestMessageWithAttachment && latestMessageWithAttachment.attachmentId) {
+            fetchAttachmentResult(
+              loadedConversationId, 
+              latestMessageWithAttachment.id, 
+              latestMessageWithAttachment.attachmentId
+            ).catch(error => {
+              console.error('Error fetching attachment result for loaded conversation:', error);
+            });
+          }
         }
         
         // Transform API messages to our Message format - reverse since index 0 is latest
@@ -101,7 +116,7 @@ export const ChatInterface = () => {
 
       setMessages(chatHistory);
     }
-  }, [currentReport, messageId, conversationId]);
+  }, [currentReport, messageId, conversationId, setMessageId, setSessionData, fetchAttachmentResult]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isGenerating) return;
