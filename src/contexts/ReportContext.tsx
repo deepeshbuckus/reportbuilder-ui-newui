@@ -33,6 +33,7 @@ interface ReportContextType {
   fetchLatestAttachment: (conversationId: string) => Promise<void>;
   setAttachmentId: (attachmentId: string) => void;
   fetchAttachmentResult: (conversationId: string, messageId: string, attachmentId: string) => Promise<void>;
+  sendChatMessage: (conversationId: string, content: string) => Promise<void>;
 }
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
@@ -307,6 +308,64 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const sendChatMessage = async (conversationId: string, content: string): Promise<void> => {
+    try {
+      const response = await fetch(`https://localhost:60400/api/reports/${conversationId}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Update session data
+      setMessageId(data.messageId);
+      setAttachmentId(data.attachmentId);
+
+      // Transform the response data
+      if (data.rows && data.columns) {
+        const transformedData = data.rows.map((row: any[]) => {
+          const obj: Record<string, any> = {};
+          data.columns.forEach((col: string, index: number) => {
+            obj[col] = row[index];
+          });
+          return obj;
+        });
+
+        const apiData = {
+          title: `Query Results: ${content}`,
+          type: 'Query Results',
+          data: transformedData
+        };
+
+        // Update current report with the new data
+        if (currentReport) {
+          const updatedReport = {
+            ...currentReport,
+            apiData: apiData,
+            content: generateContentFromApiData(apiData, content),
+            updatedAt: new Date()
+          };
+          setCurrentReport(updatedReport);
+          updateReport(currentReport.id, { 
+            apiData: apiData, 
+            content: updatedReport.content,
+            updatedAt: new Date()
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error sending chat message:', error);
+      throw error;
+    }
+  };
+
   return (
     <ReportContext.Provider value={{
       reports,
@@ -323,7 +382,8 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
       setMessageId,
       fetchLatestAttachment,
       setAttachmentId,
-      fetchAttachmentResult
+      fetchAttachmentResult,
+      sendChatMessage
     }}>
       {children}
     </ReportContext.Provider>
