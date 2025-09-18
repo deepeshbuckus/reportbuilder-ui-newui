@@ -55,6 +55,14 @@ export const ChatInterface = () => {
         })));
         
         console.log('Full first message object:', JSON.stringify(parsedHistory[0], null, 2));
+        console.log('All messages with attachment check:', parsedHistory.map((msg: any, index: number) => ({
+          index,
+          message_id: msg.message_id,
+          attachment_id: msg.attachment_id,
+          status: msg.status,
+          content: msg.content,
+          fullKeys: Object.keys(msg)
+        })));
         
         // Save the message ID from index 0 (latest message)
         if (parsedHistory.length > 0) {
