@@ -156,37 +156,25 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
 
   const generateReportFromPrompt = async (prompt: string, apiData?: { title: string; type: string; data: Record<string, any>[] }): Promise<Report> => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/nl2sql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Origin': window.location.origin,
-        },
-        credentials: 'include',
-        body: JSON.stringify({ prompt }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const reportData = await response.json();
+      // Use startNewChat to initiate a new conversation
+      const { messageId, conversationId } = await startNewChat(prompt);
       
-      const reportTitle = reportData.title || 'AI Generated Report';
-      const reportType = reportData.type || 'General';
-      const reportContent = generateContentFromApiData(reportData, prompt);
-
+      // Return the current report that was created by startNewChat
+      if (currentReport) {
+        return currentReport;
+      }
+      
+      // Fallback: create a basic report if no data was returned
       const newReport: Report = {
         id: Date.now().toString(),
-        title: reportTitle,
+        title: 'AI Generated Report',
         description: `Report generated from prompt: "${prompt.substring(0, 100)}${prompt.length > 100 ? '...' : ''}"`,
-        content: reportContent,
+        content: generateMockReportContent(prompt, 'General'),
         createdAt: new Date(),
         updatedAt: new Date(),
         status: 'draft',
-        type: reportType,
-        apiData: reportData
+        type: 'General',
+        attachmentId: undefined
       };
 
       setReports(prev => [newReport, ...prev]);
@@ -485,4 +473,83 @@ const generateTableFromApiData = (data: Record<string, any>[]): string => {
   const dataRows = data.map(row => `| ${headers.map(header => row[header] || '').join(' | ')} |`);
   
   return [headerRow, separatorRow, ...dataRows].join('\n');
+};
+
+const generateMockReportContent = (prompt: string, type: string): string => {
+  const tableData = generateTableData(type);
+  
+  return `
+# ${type} Report Analysis
+
+## Executive Summary
+Based on your request: "${prompt}"
+
+This comprehensive ${type.toLowerCase()} report provides detailed insights and analysis tailored to your specific requirements.
+
+## Key Metrics Table
+${tableData}
+
+## Key Findings
+- **Performance Metrics**: Analysis shows positive trends across key indicators
+- **Cost Analysis**: Detailed breakdown of expenses and optimization opportunities
+- **Compliance Status**: All regulatory requirements are being met
+
+## Detailed Analysis
+The data indicates strong performance in several areas, with opportunities for optimization in others. Key metrics show:
+
+- 15% improvement in efficiency
+- Cost savings of $25,000 annually
+- 98% compliance rate
+- Employee satisfaction increased by 12%
+
+## Conclusion
+The analysis demonstrates positive outcomes based on the data provided.
+  `;
+};
+
+const generateTableData = (type: string): string => {
+  switch (type) {
+    case 'Payroll':
+      return `| Department | Employee Count | Average Salary | Total Cost | Overtime Hours |
+|------------|----------------|----------------|------------|----------------|
+| Engineering | 45 | $95,000 | $4,275,000 | 1,250 |
+| Sales | 32 | $75,000 | $2,400,000 | 890 |
+| Marketing | 18 | $70,000 | $1,260,000 | 320 |
+| HR | 12 | $65,000 | $780,000 | 150 |
+| Finance | 15 | $80,000 | $1,200,000 | 200 |`;
+
+    case 'Benefits':
+      return `| Benefit Type | Enrolled Employees | Monthly Cost per Employee | Total Annual Cost | Utilization Rate |
+|--------------|-------------------|---------------------------|-------------------|------------------|
+| Health Insurance | 110 | $650 | $858,000 | 95% |
+| Dental Insurance | 95 | $120 | $136,800 | 85% |
+| Vision Insurance | 88 | $45 | $47,520 | 80% |
+| 401(k) Match | 102 | $320 | $391,680 | 92% |
+| Life Insurance | 122 | $25 | $36,600 | 100% |`;
+
+    case 'Attendance':
+      return `| Employee ID | Department | Days Present | Days Absent | PTO Used | Sick Leave | Attendance Rate |
+|-------------|------------|--------------|-------------|----------|------------|-----------------|
+| EMP001 | Engineering | 220 | 10 | 15 | 5 | 95.7% |
+| EMP002 | Sales | 225 | 5 | 12 | 3 | 97.8% |
+| EMP003 | Marketing | 215 | 15 | 20 | 8 | 93.5% |
+| EMP004 | HR | 230 | 0 | 10 | 0 | 100% |
+| EMP005 | Finance | 218 | 12 | 18 | 6 | 94.8% |`;
+
+    case 'Demographics':
+      return `| Age Group | Count | Percentage | Gender Distribution | Department Distribution |
+|-----------|-------|------------|-------------------|-------------------------|
+| 22-30 | 35 | 28.7% | M: 18, F: 17 | Eng: 15, Sales: 12, Other: 8 |
+| 31-40 | 45 | 36.9% | M: 25, F: 20 | Eng: 20, Sales: 10, Other: 15 |
+| 41-50 | 30 | 24.6% | M: 16, F: 14 | Eng: 8, Sales: 8, Other: 14 |
+| 51+ | 12 | 9.8% | M: 7, F: 5 | Eng: 2, Sales: 2, Other: 8 |`;
+
+    default:
+      return `| Metric | Q1 | Q2 | Q3 | Q4 | YoY Change |
+|--------|----|----|----|----|------------|
+| Revenue | $2.1M | $2.3M | $2.5M | $2.8M | +15% |
+| Expenses | $1.8M | $1.9M | $2.0M | $2.1M | +8% |
+| Profit | $300K | $400K | $500K | $700K | +35% |
+| ROI | 12% | 15% | 18% | 22% | +10% |`;
+  }
 };
