@@ -297,6 +297,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
         updateReport(currentReport.id, { apiData: apiData, content: updatedReport.content });
       } else {
         console.log('No current report found to update, creating new report');
+        console.log('API data received:', apiData);
         // Create a new report from the attachment data
         const newReport: Report = {
           id: Date.now().toString(),
@@ -309,8 +310,10 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
           updatedAt: new Date(),
           apiData: apiData
         };
+        console.log('Created new report:', newReport);
         setCurrentReport(newReport);
         addReport(newReport);
+        console.log('Set current report and added to reports list');
       }
     } catch (error) {
       console.error('Error fetching attachment result:', error);

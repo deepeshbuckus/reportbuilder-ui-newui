@@ -178,6 +178,9 @@ const exportToCSV = (report: any) => {
 export const ReportPreview = () => {
   const { currentReport } = useReports();
   const { toast } = useToast();
+  
+  // Debug logging
+  console.log('ReportPreview currentReport:', currentReport);
 
   const handleExport = () => {
     if (!currentReport) {
