@@ -43,8 +43,8 @@ export const ChatInterface = () => {
     if (loadedChatHistory && loadedConversationId) {
       try {
         const parsedHistory = JSON.parse(loadedChatHistory);
-        // Transform API messages to our Message format
-        const transformedMessages: Message[] = parsedHistory.map((msg: any, index: number) => ({
+        // Transform API messages to our Message format - reverse since index 0 is latest
+        const transformedMessages: Message[] = parsedHistory.reverse().map((msg: any, index: number) => ({
           id: msg.id || `loaded-${index}`,
           content: msg.content || msg.message || '',
           sender: msg.role === 'user' ? 'user' : 'assistant',
