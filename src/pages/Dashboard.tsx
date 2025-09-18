@@ -89,22 +89,38 @@ const Dashboard = () => {
 
   const handleEditReport = async (conversationId: string) => {
     try {
-      const response = await fetch(`https://adb-2013026601306673.13.azuredatabricks.net/api/2.0/genie/spaces/01f093cf5494177c9ac9c0668b744e84/conversations/${conversationId}/messages`, {
-        headers: {
-          'Authorization': 'Bearer dummy_bearer_token_replace_with_real_one',
-          'Content-Type': 'application/json',
-        },
-      });
+      let allMessages: any[] = [];
+      let pageToken: string | undefined;
+      
+      do {
+        const url = new URL(`https://localhost:60400/api/reports/${conversationId}/messages`);
+        url.searchParams.set('pageSize', '100');
+        if (pageToken) {
+          url.searchParams.set('pageToken', pageToken);
+        }
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Databricks API response:', data);
-        // Handle the response data here
-      } else {
-        console.error('Failed to fetch conversation messages:', response.status);
-      }
+        const response = await fetch(url.toString(), {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          allMessages = [...allMessages, ...(data.messages || [])];
+          pageToken = data.next_page_token;
+          
+          console.log('Chat history page:', data);
+        } else {
+          console.error('Failed to fetch conversation messages:', response.status);
+          break;
+        }
+      } while (pageToken);
+
+      console.log('Complete chat history:', allMessages);
+      // Handle the complete chat history here
     } catch (error) {
-      console.error('Failed to call Databricks API:', error);
+      console.error('Failed to load chat history:', error);
     }
   };
 
