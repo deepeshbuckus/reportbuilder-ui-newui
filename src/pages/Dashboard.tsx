@@ -87,6 +87,27 @@ const Dashboard = () => {
     }
   };
 
+  const handleEditReport = async (conversationId: string) => {
+    try {
+      const response = await fetch(`https://adb-2013026601306673.13.azuredatabricks.net/api/2.0/genie/spaces/01f093cf5494177c9ac9c0668b744e84/conversations/${conversationId}/messages`, {
+        headers: {
+          'Authorization': 'Bearer dummy_bearer_token_replace_with_real_one',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Databricks API response:', data);
+        // Handle the response data here
+      } else {
+        console.error('Failed to fetch conversation messages:', response.status);
+      }
+    } catch (error) {
+      console.error('Failed to call Databricks API:', error);
+    }
+  };
+
   const handleUpdateReportName = async (conversationId: string, newName: string) => {
     try {
       const response = await fetch('http://localhost:8085/api/reports/mappings', {
@@ -267,9 +288,13 @@ const Dashboard = () => {
                         size="default" 
                         className="flex-1"
                         onClick={() => {
-                          const newName = prompt('Enter new report name:', report.reportName || '');
-                          if (newName && newName.trim()) {
-                            handleUpdateReportName(report.conversationId, newName.trim());
+                          if (report.reportName) {
+                            handleEditReport(report.conversationId);
+                          } else {
+                            const newName = prompt('Enter new report name:', report.reportName || '');
+                            if (newName && newName.trim()) {
+                              handleUpdateReportName(report.conversationId, newName.trim());
+                            }
                           }
                         }}
                       >
