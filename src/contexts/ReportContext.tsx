@@ -253,6 +253,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchAttachmentResult = async (conversationId: string, messageId: string, attachmentId: string): Promise<void> => {
     try {
+      console.log('Fetching attachment result:', { conversationId, messageId, attachmentId });
       const response = await fetch(`https://localhost:60400/api/reports/${conversationId}/messages/${messageId}/attachments/${attachmentId}/result`, {
         method: 'GET',
         headers: {
@@ -265,6 +266,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const data = await response.json();
+      console.log('Attachment result data:', data);
       
       // Transform the response into apiData format
       const transformedData = data.rows.map((row: any[]) => {
@@ -281,8 +283,11 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
         data: transformedData
       };
 
+      console.log('Transformed API data:', apiData);
+
       // Update current report with the fetched data
       if (currentReport) {
+        console.log('Updating current report with attachment data');
         const updatedReport = {
           ...currentReport,
           apiData: apiData,
@@ -290,6 +295,8 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
         };
         setCurrentReport(updatedReport);
         updateReport(currentReport.id, { apiData: apiData, content: updatedReport.content });
+      } else {
+        console.log('No current report found to update');
       }
     } catch (error) {
       console.error('Error fetching attachment result:', error);

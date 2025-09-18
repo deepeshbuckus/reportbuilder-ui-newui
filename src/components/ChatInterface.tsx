@@ -43,6 +43,8 @@ export const ChatInterface = () => {
     if (loadedChatHistory && loadedConversationId) {
       try {
         const parsedHistory = JSON.parse(loadedChatHistory);
+        console.log('Loading chat history:', parsedHistory);
+        
         // Save the message ID from index 0 (latest message)
         if (parsedHistory.length > 0 && parsedHistory[0].id) {
           setMessageId(parsedHistory[0].id);
@@ -52,14 +54,19 @@ export const ChatInterface = () => {
           
           // Find the latest message with an attachment and fetch its result
           const latestMessageWithAttachment = parsedHistory.find((msg: any) => msg.attachmentId);
+          console.log('Latest message with attachment:', latestMessageWithAttachment);
+          
           if (latestMessageWithAttachment && latestMessageWithAttachment.attachmentId) {
-            fetchAttachmentResult(
-              loadedConversationId, 
-              latestMessageWithAttachment.id, 
-              latestMessageWithAttachment.attachmentId
-            ).catch(error => {
-              console.error('Error fetching attachment result for loaded conversation:', error);
-            });
+            // Delay the fetch to ensure the report context is properly set
+            setTimeout(() => {
+              fetchAttachmentResult(
+                loadedConversationId, 
+                latestMessageWithAttachment.id, 
+                latestMessageWithAttachment.attachmentId
+              ).catch(error => {
+                console.error('Error fetching attachment result for loaded conversation:', error);
+              });
+            }, 1000);
           }
         }
         
