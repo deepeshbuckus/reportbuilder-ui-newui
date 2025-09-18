@@ -32,6 +32,7 @@ interface ReportContextType {
   setMessageId: (messageId: string) => void;
   fetchLatestAttachment: (conversationId: string) => Promise<void>;
   setAttachmentId: (attachmentId: string) => void;
+  fetchAttachmentResult: (conversationId: string, messageId: string, attachmentId: string) => Promise<void>;
 }
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
@@ -260,6 +261,52 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchAttachmentResult = async (conversationId: string, messageId: string, attachmentId: string): Promise<void> => {
+    try {
+      const response = await fetch(`https://localhost:60400/api/reports/${conversationId}/messages/${messageId}/attachments/${attachmentId}/result`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Transform the response into apiData format
+      const transformedData = data.rows.map((row: any[]) => {
+        const obj: Record<string, any> = {};
+        data.columns.forEach((col: string, index: number) => {
+          obj[col] = row[index];
+        });
+        return obj;
+      });
+
+      const apiData = {
+        title: `Query Results`,
+        type: 'Query Results',
+        data: transformedData
+      };
+
+      // Update current report with the fetched data
+      if (currentReport) {
+        const updatedReport = {
+          ...currentReport,
+          apiData: apiData,
+          content: generateContentFromApiData(apiData, currentReport.description)
+        };
+        setCurrentReport(updatedReport);
+        updateReport(currentReport.id, { apiData: apiData, content: updatedReport.content });
+      }
+    } catch (error) {
+      console.error('Error fetching attachment result:', error);
+      throw error;
+    }
+  };
+
   return (
     <ReportContext.Provider value={{
       reports,
@@ -275,7 +322,8 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
       setSessionData,
       setMessageId,
       fetchLatestAttachment,
-      setAttachmentId
+      setAttachmentId,
+      fetchAttachmentResult
     }}>
       {children}
     </ReportContext.Provider>
