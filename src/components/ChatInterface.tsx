@@ -117,7 +117,7 @@ export const ChatInterface = () => {
         const transformedMessages: Message[] = parsedHistory.reverse().map((msg: any, index: number) => ({
           id: msg.id || `loaded-${index}`,
           content: msg.content || msg.message || '',
-          sender: msg.role === 'user' ? 'user' : 'assistant',
+          sender: (msg.role === 'user' || msg.sender === 'user') ? 'user' : 'assistant',
           timestamp: new Date(msg.timestamp || Date.now())
         }));
         
