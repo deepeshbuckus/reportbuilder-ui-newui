@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -33,10 +33,13 @@ export const ChatInterface = () => {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [chatHistoryLoaded, setChatHistoryLoaded] = useState(false);
+  const chatHistoryInitialized = useRef(false);
 
   // Initialize chat history when there's an existing session or loaded data
   useEffect(() => {
+    // Prevent multiple initializations
+    if (chatHistoryInitialized.current) return;
+    
     // Check for loaded chat history from localStorage (when editing a report)
     const loadedChatHistory = localStorage.getItem('loadedChatHistory');
     const loadedConversationId = localStorage.getItem('loadedConversationId');
@@ -131,11 +134,11 @@ export const ChatInterface = () => {
         // Clear the localStorage after loading
         localStorage.removeItem('loadedChatHistory');
         localStorage.removeItem('loadedConversationId');
-        setChatHistoryLoaded(true);
+        chatHistoryInitialized.current = true;
       } catch (error) {
         console.error('Error parsing loaded chat history:', error);
       }
-    } else if (currentReport && messageId && conversationId && !chatHistoryLoaded) {
+    } else if (currentReport && messageId && conversationId && !chatHistoryInitialized.current) {
       // Fallback to existing logic for current report
       let originalPrompt = "Previous query";
       
@@ -177,8 +180,9 @@ export const ChatInterface = () => {
       ];
 
       setMessages(chatHistory);
+      chatHistoryInitialized.current = true;
     }
-  }, [currentReport, messageId, conversationId, setMessageId, setSessionData, fetchAttachmentResult]);
+  }, [messageId, conversationId, setMessageId, setSessionData, fetchAttachmentResult]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isGenerating) return;
