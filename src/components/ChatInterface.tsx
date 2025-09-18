@@ -78,12 +78,18 @@ export const ChatInterface = () => {
             
             // Find the latest message with an attachment and fetch its result
             const latestMessageWithAttachment = parsedHistory.find((msg: any) => 
-              msg.attachment_id || msg.attachmentId
+              msg.attachment_id || msg.attachmentId || (msg.attachments && msg.attachments.length > 0)
             );
             console.log('Latest message with attachment:', latestMessageWithAttachment);
             
             if (latestMessageWithAttachment) {
-              const attachmentId = latestMessageWithAttachment.attachment_id || latestMessageWithAttachment.attachmentId;
+              let attachmentId = latestMessageWithAttachment.attachment_id || latestMessageWithAttachment.attachmentId;
+              
+              // Check if attachment is in the attachments array
+              if (!attachmentId && latestMessageWithAttachment.attachments && latestMessageWithAttachment.attachments.length > 0) {
+                attachmentId = latestMessageWithAttachment.attachments[0].attachment_id;
+              }
+              
               const msgId = latestMessageWithAttachment.message_id || latestMessageWithAttachment.id;
               
               if (attachmentId && msgId) {
