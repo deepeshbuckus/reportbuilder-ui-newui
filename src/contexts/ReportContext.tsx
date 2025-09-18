@@ -254,6 +254,22 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   const fetchAttachmentResult = async (conversationId: string, messageId: string, attachmentId: string): Promise<void> => {
     try {
       console.log('Fetching attachment result:', { conversationId, messageId, attachmentId });
+      
+      // First get the original attachment info to preserve the query details
+      const attachmentInfoResponse = await fetch(`https://localhost:60400/api/reports/${conversationId}/messages/${messageId}/attachments/${attachmentId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      let originalQuery = null;
+      if (attachmentInfoResponse.ok) {
+        const attachmentInfo = await attachmentInfoResponse.json();
+        console.log('Original attachment info:', attachmentInfo);
+        originalQuery = attachmentInfo.query;
+      }
+      
       const response = await fetch(`https://localhost:60400/api/reports/${conversationId}/messages/${messageId}/attachments/${attachmentId}/result`, {
         method: 'GET',
         headers: {
@@ -277,10 +293,13 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
         return obj;
       });
 
+      // Use original query info if available, otherwise fall back to generic title
+      const title = originalQuery?.description || `Query Results`;
       const apiData = {
-        title: `Query Results`,
+        title: title,
         type: 'Query Results',
-        data: transformedData
+        data: transformedData,
+        originalQuery: originalQuery
       };
 
       console.log('Transformed API data:', apiData);

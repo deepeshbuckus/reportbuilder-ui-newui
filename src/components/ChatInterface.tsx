@@ -137,8 +137,11 @@ export const ChatInterface = () => {
       // Fallback to existing logic for current report
       let originalPrompt = "Previous query";
       
-      // Try to get the original prompt from current report's description or title
-      if (currentReport.description && currentReport.description !== 'Report generated from chat history') {
+      // Try to get the original prompt from different sources
+      if (currentReport.apiData && (currentReport.apiData as any).originalQuery) {
+        const originalQuery = (currentReport.apiData as any).originalQuery;
+        originalPrompt = originalQuery.description || originalQuery.query || originalPrompt;
+      } else if (currentReport.description && currentReport.description !== 'Report generated from chat history') {
         const promptMatch = currentReport.description.match(/Report generated from prompt: "(.+?)"/);
         if (promptMatch) {
           originalPrompt = promptMatch[1];
@@ -146,7 +149,7 @@ export const ChatInterface = () => {
       }
       
       // If still default, try to get from title or use a more descriptive default
-      if (originalPrompt === "Previous query" && currentReport.title) {
+      if (originalPrompt === "Previous query" && currentReport.title && currentReport.title !== 'Query Results') {
         originalPrompt = currentReport.title.replace('Query Results: ', '').replace('...', '');
       }
 
