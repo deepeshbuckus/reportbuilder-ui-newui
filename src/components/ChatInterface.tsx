@@ -22,7 +22,7 @@ const promptingTips = [
 ];
 
 export const ChatInterface = () => {
-  const { generateReportFromPrompt, currentReport, messageId, conversationId, setMessageId } = useReports();
+  const { generateReportFromPrompt, currentReport, messageId, conversationId, setMessageId, sendChatMessage } = useReports();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -128,13 +128,21 @@ export const ChatInterface = () => {
     setMessages(prev => [...prev, thinkingMessage]);
 
     try {
-      // Generate report using the prompt
-      const report = await generateReportFromPrompt(userPrompt);
+      let report;
+      
+      // If there's an existing conversation, use sendChatMessage
+      if (conversationId && messageId) {
+        await sendChatMessage(conversationId, userPrompt);
+        report = currentReport; // Use the updated current report
+      } else {
+        // Otherwise, generate a new report
+        report = await generateReportFromPrompt(userPrompt);
+      }
       
       // Update the thinking message with the actual response
       const aiResponse: Message = {
         id: thinkingMessage.id,
-        content: `Perfect! I've generated a comprehensive ${report.type} report titled "${report.title}". The report includes detailed analysis, key findings, and actionable recommendations based on your requirements. You can view the full report in the preview panel and access it from your dashboard.`,
+        content: `Perfect! I've ${conversationId ? 'updated your report with new data' : 'generated a comprehensive ' + (report?.type || 'report')} titled "${report?.title || 'New Report'}". The report includes detailed analysis${report?.apiData?.data?.length ? ` with ${report.apiData.data.length} records` : ''}. You can view the full report in the preview panel and access it from your dashboard.`,
         sender: 'assistant',
         timestamp: new Date()
       };
