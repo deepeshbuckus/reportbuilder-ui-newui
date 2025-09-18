@@ -296,7 +296,21 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
         setCurrentReport(updatedReport);
         updateReport(currentReport.id, { apiData: apiData, content: updatedReport.content });
       } else {
-        console.log('No current report found to update');
+        console.log('No current report found to update, creating new report');
+        // Create a new report from the attachment data
+        const newReport: Report = {
+          id: Date.now().toString(),
+          title: apiData.title,
+          description: 'Report generated from chat history',
+          content: generateContentFromApiData(apiData, 'Top 5 employees by deposit amount'),
+          status: 'published',
+          type: 'data-report',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          apiData: apiData
+        };
+        setCurrentReport(newReport);
+        addReport(newReport);
       }
     } catch (error) {
       console.error('Error fetching attachment result:', error);
