@@ -22,6 +22,7 @@ interface ReportContextType {
   currentReport: Report | null;
   messageId: string | null;
   conversationId: string | null;
+  attachmentId: string | null;
   addReport: (report: Omit<Report, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateReport: (id: string, updates: Partial<Report>) => void;
   setCurrentReport: (report: Report | null) => void;
@@ -29,6 +30,8 @@ interface ReportContextType {
   startNewChat: (content: string) => Promise<{ messageId: string; conversationId: string }>;
   setSessionData: (messageId: string, conversationId: string) => void;
   setMessageId: (messageId: string) => void;
+  fetchLatestAttachment: (conversationId: string) => Promise<void>;
+  setAttachmentId: (attachmentId: string) => void;
 }
 
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
@@ -110,6 +113,7 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
   const [currentReport, setCurrentReport] = useState<Report | null>(null);
   const [messageId, setMessageId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [attachmentId, setAttachmentId] = useState<string | null>(null);
 
   // Check for loaded conversation ID on mount
   useEffect(() => {
@@ -233,19 +237,45 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     setConversationId(conversationId);
   };
 
+  const fetchLatestAttachment = async (conversationId: string): Promise<void> => {
+    try {
+      const response = await fetch(`https://localhost:60400/api/reports/${conversationId}/latest-attachment`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.attachmentId) {
+        setAttachmentId(data.attachmentId);
+      }
+    } catch (error) {
+      console.error('Error fetching latest attachment:', error);
+      throw error;
+    }
+  };
+
   return (
     <ReportContext.Provider value={{
       reports,
       currentReport,
       messageId,
       conversationId,
+      attachmentId,
       addReport,
       updateReport,
       setCurrentReport,
       generateReportFromPrompt,
       startNewChat,
       setSessionData,
-      setMessageId
+      setMessageId,
+      fetchLatestAttachment,
+      setAttachmentId
     }}>
       {children}
     </ReportContext.Provider>
