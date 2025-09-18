@@ -50,36 +50,47 @@ export const ChatInterface = () => {
           keys: Object.keys(msg),
           hasAttachment: !!msg.attachment_id || !!msg.attachmentId,
           messageId: msg.id || msg.message_id,
-          attachmentId: msg.attachment_id || msg.attachmentId
+          attachmentId: msg.attachment_id || msg.attachmentId,
+          fullMessage: msg
         })));
         
+        console.log('Full first message object:', JSON.stringify(parsedHistory[0], null, 2));
+        
         // Save the message ID from index 0 (latest message)
-        if (parsedHistory.length > 0 && parsedHistory[0].id) {
+        if (parsedHistory.length > 0) {
           const latestMessage = parsedHistory[0];
-          const messageId = latestMessage.id || latestMessage.message_id;
-          setMessageId(messageId);
+          const latestMessageId = latestMessage.message_id || latestMessage.id;
+          console.log('Setting message ID to:', latestMessageId);
           
-          // Set session data for the loaded conversation
-          setSessionData(messageId, loadedConversationId);
-          
-          // Find the latest message with an attachment and fetch its result
-          const latestMessageWithAttachment = parsedHistory.find((msg: any) => 
-            msg.attachmentId || msg.attachment_id
-          );
-          console.log('Latest message with attachment:', latestMessageWithAttachment);
-          
-          if (latestMessageWithAttachment) {
-            const attachmentId = latestMessageWithAttachment.attachmentId || latestMessageWithAttachment.attachment_id;
-            const msgId = latestMessageWithAttachment.id || latestMessageWithAttachment.message_id;
+          if (latestMessageId) {
+            setMessageId(latestMessageId);
             
-            if (attachmentId && msgId) {
-              console.log('Will fetch attachment result for:', { conversationId: loadedConversationId, messageId: msgId, attachmentId });
-              // Delay the fetch to ensure the report context is properly set
-              setTimeout(() => {
-                fetchAttachmentResult(loadedConversationId, msgId, attachmentId).catch(error => {
-                  console.error('Error fetching attachment result for loaded conversation:', error);
-                });
-              }, 1000);
+            // Set session data for the loaded conversation
+            setSessionData(latestMessageId, loadedConversationId);
+            
+            // Find the latest message with an attachment and fetch its result
+            const latestMessageWithAttachment = parsedHistory.find((msg: any) => 
+              msg.attachment_id || msg.attachmentId
+            );
+            console.log('Latest message with attachment:', latestMessageWithAttachment);
+            
+            if (latestMessageWithAttachment) {
+              const attachmentId = latestMessageWithAttachment.attachment_id || latestMessageWithAttachment.attachmentId;
+              const msgId = latestMessageWithAttachment.message_id || latestMessageWithAttachment.id;
+              
+              if (attachmentId && msgId) {
+                console.log('Will fetch attachment result for:', { conversationId: loadedConversationId, messageId: msgId, attachmentId });
+                // Delay the fetch to ensure the report context is properly set
+                setTimeout(() => {
+                  fetchAttachmentResult(loadedConversationId, msgId, attachmentId).catch(error => {
+                    console.error('Error fetching attachment result for loaded conversation:', error);
+                  });
+                }, 1000);
+              } else {
+                console.log('Missing attachment ID or message ID:', { attachmentId, msgId });
+              }
+            } else {
+              console.log('No message with attachment found in history');
             }
           }
         }
